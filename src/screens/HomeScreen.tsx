@@ -10,7 +10,7 @@ export const HomeScreen = ({ navigation }) => {
       title: 'Home',
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <Item title="Upload" onPress={() => alert('upload')} />
+          <Item title="Upload" onPress={() => navigation.navigate('UploadForm')} />
         </HeaderButtons>
       ),
     });
