@@ -1,11 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react'
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, Image, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Formik } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { DebugBar } from '@/components';
+import { useApi } from '@/hooks';
 
 const imagesDirectory = FileSystem.documentDirectory + 'images/';
 
@@ -16,13 +17,20 @@ const checkDirectoryExists = async () => {
   }
 };
 
-export const UploadFormScreen = (props) => {
+export const UploadFormScreen = ({ navigation }) => {
   const [uploading, setUploading] = useState(false);
   const [images, setImages] = useState<any[]>([])
+  const [preview, setPreview] = useState<string>();
+  const { postUpload } = useApi();
+
 
   useEffect(() => {
     loadImages();
   }, []);
+
+  useEffect(() => {
+    previewImage(preview);
+  }, [preview]);
 
   const loadImages = async () => {
     await checkDirectoryExists();
@@ -32,7 +40,15 @@ export const UploadFormScreen = (props) => {
     }
   };
 
-  const selectImage = async (useLibrary: boolean) => {
+  const previewImage = async (imageResult: string) => {
+    await checkDirectoryExists();
+    let uploadedImg = await imageResult;
+    if (uploadedImg) {
+      setPreview(uploadedImg);
+    }
+  };
+
+  const selectImage = async (handleChange, useLibrary: boolean) => {
     let result;
     const options: ImagePicker.ImagePickerOptions = {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -52,30 +68,28 @@ export const UploadFormScreen = (props) => {
     console.log('PHOTO SELECTION RESULT', result);
     console.log('====================================');
 
+    if (result.assets) {
+      previewImage(result.assets[0].uri);
+    }
+
     if (!result.canceled) {
-      saveImage(result.assets[0].uri);
+      handleChange(result.assets[0].uri);
     }
   }
 
-  const saveImage = async (uri: string) => {
-    await checkDirectoryExists();
-    const filename = new Date().getTime() + '.jpeg';
-    const dest = imagesDirectory + filename;
-    await FileSystem.copyAsync({ from: uri, to: dest });
-    setImages([...images, dest]);
-  };
+  // const saveImage = async (uri: string) => {
+  //   await checkDirectoryExists();
+  //   const filename = new Date().getTime() + '.jpeg';
+  //   const dest = imagesDirectory + filename;
+  //   await FileSystem.copyAsync({ from: uri, to: dest });
+  //   setImages([...images, dest]);
+  // };
 
-  const uploadImage = async (uri: string) => {
-    setUploading(true);
-
-    await FileSystem.uploadAsync('http://192.168.1.111:8888/upload.php', uri, {
-      httpMethod: 'POST',
-      uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-      fieldName: 'file'
-    });
-
-    setUploading(false);
-  };
+  // const uploadImage = async (uri: string) => {
+  //   setUploading(true);
+  //   await postUpload(uri);
+  //   setUploading(false);
+  // };
 
   const deleteImage = async (uri: string) => {
     await FileSystem.deleteAsync(uri);
@@ -86,12 +100,29 @@ export const UploadFormScreen = (props) => {
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
       <Formik
-        initialValues={{ title: '', description: '' }}
-        onSubmit={values => console.log(values)}
+        initialValues={{ image: '', title: '', description: '' }}
+        onSubmit={async (values, { setSubmitting }) => {
+          setSubmitting(true); // Set submitting state to true during form submission
+
+          try {
+            await postUpload(values);
+            console.log('====================================');
+            console.log('SUBMITTED FORMIK VALUES', JSON.stringify(values, null, 2));
+            console.log('====================================');
+            navigation.goBack();
+          } catch (error) {
+            alert('An error occurred while saving the recipe. Please try again.');
+
+            console.error('Error while saving the recipe', error);
+          } finally {
+            setSubmitting(false); // Set submitting state back to false after submission (whether success or error)
+          }
+        }}
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <View>
             <DebugBar data={values} />
+            <Image style={{ width: 80, height: 80 }} source={{ uri: preview }} />
             <TextInput
               placeholder="Title"
               onChangeText={handleChange('title')}
@@ -106,8 +137,8 @@ export const UploadFormScreen = (props) => {
               multiline={true}
             />
             <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 20 }}>
-              <Button title="Photo Library" onPress={() => selectImage(true)} />
-              <Button title="Capture Image" onPress={() => selectImage(false)} />
+              <Button title="Photo Library" onPress={() => selectImage(handleChange('image'), true)} />
+              <Button title="Capture Image" onPress={() => selectImage(handleChange('image'), false)} />
             </View>
             <Button onPress={handleSubmit} title="Submit" />
           </View>
