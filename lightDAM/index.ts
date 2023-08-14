@@ -45,7 +45,7 @@ app.post('/upload', upload.single('image'), function (req, res) {
 });
 
 // View all data
-app.get('/data', (req, res) => {
+app.get('/images', (req, res) => {
   res.json(images);
 });
 

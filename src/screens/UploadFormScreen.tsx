@@ -111,9 +111,9 @@ export const UploadFormScreen = ({ navigation }) => {
             console.log('====================================');
             navigation.goBack();
           } catch (error) {
-            alert('An error occurred while saving the recipe. Please try again.');
+            alert('An error occurred while uploading the photo. Please try again.');
 
-            console.error('Error while saving the recipe', error);
+            console.error('Error uploading file', error);
           } finally {
             setSubmitting(false); // Set submitting state back to false after submission (whether success or error)
           }
