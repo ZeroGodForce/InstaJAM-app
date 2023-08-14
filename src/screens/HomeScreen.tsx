@@ -1,14 +1,22 @@
-import React, { useEffect, useLayoutEffect } from 'react';
-import { Dimensions, Image, StyleSheet, View } from 'react-native';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { Dimensions, FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { StatusBar } from 'expo-status-bar';
 import { MaterialHeaderButton } from '@/components'
 import { useApi } from '@/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+type ImageData = {
+  id: string;
+  title: string;
+  description: string;
+  imagePath: string;
+};
+
 export const HomeScreen = ({ navigation }) => {
   const { getImages } = useApi();
-  const [images, setImages] = React.useState([]);
+  const [images, setImages] = useState<ImageData[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -22,17 +30,23 @@ export const HomeScreen = ({ navigation }) => {
   }, [navigation]);
 
   useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        const fetchedImages = await getImages();
-        setImages(fetchedImages);
-      } catch (error) {
-        console.error("Error fetching images:", error);
-      }
-    };
-
-    fetchImages();
+    fetchAndSetImages();
   }, []);
+
+  const fetchAndSetImages = async () => {
+    try {
+      const fetchedImages = await getImages();
+      setImages(fetchedImages);
+    } catch (error) {
+      console.error("Error fetching images:", error);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchAndSetImages();
+    setRefreshing(false);
+  };
 
   const imageGrid = images.map(item => ({
     id: item.id,
@@ -41,18 +55,29 @@ export const HomeScreen = ({ navigation }) => {
     imagePath: item.imagePath,
   }));
 
+  const renderItem = ({ item }: { item: ImageData }) => {
+    return (
+      <TouchableOpacity onPress={() => alert(item.id)} style={styles.item}>
+        <Image
+          source={{ uri: item.imagePath }}
+          style={styles.photo}
+          accessibilityIgnoresInvertColors
+        />
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.grid}>
-        {imageGrid.length > 0 ? imageGrid.map((item) => (
-          <View key={item.id} style={styles.item}>
-            <Image
-              source={{ uri: item.imagePath }}
-              style={styles.photo}
-              accessibilityIgnoresInvertColors
-            />
-          </View>
-        )) : null}
+        <FlatList
+          data={imageGrid}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          numColumns={2}
+        />
       </View>
       <StatusBar style="auto" />
     </SafeAreaView>
