@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { API_URL } from '@env';
 
 export const useApi = () => {
-  const baseURL = 'http://192.168.1.111:3000';
+  const baseURL = API_URL;
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   const postUpload = async (formikValues?: any): Promise<void> => {
