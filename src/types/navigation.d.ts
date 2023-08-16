@@ -8,10 +8,13 @@ export type HomeStackParams = {
 }
 
 export type RootNavigatorParams = {
+  Login: underfined
+  Register: undefined
   TabNavigator: undefined
 }
 
 export type TabNavigatorParams = {
   HomeStack: undefined
   FavouritesStack: undefined
+  Profile: undefined
 }

@@ -4,10 +4,10 @@ import { Button, StyleSheet, TextInput, View } from 'react-native';
 import { Formik } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DebugBar } from '@/components';
-import { useApi } from '@/hooks';
+import { useAuthApi } from '@/hooks';
 
 export const RegisterScreen = ({ navigation }) => {
-  const { postRegister } = useApi();
+  const { postRegister } = useAuthApi();
 
   return (
     <SafeAreaView style={styles.container}>

@@ -55,37 +55,5 @@ export const useApi = () => {
     }
   };
 
-  const postRegister = async (formikValues?: any): Promise<void> => {
-    console.log('========== REGISTER ==========');
-    console.log('VALUES', formikValues);
-    console.log('==============================');
-
-    try {
-      setIsProcessing(true);
-
-      const data = {
-        name: formikValues.name,
-        email: formikValues.email,
-        password: formikValues.password,
-      }
-
-      const response = await axios.post(`${baseURL}/register`, data, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        }
-      })
-
-      console.log('=========== POST =============');
-      console.log('RESPONSE', response.data);
-      console.log('==============================');
-
-    } catch (error) {
-      console.error('Error submitting registration:', error);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  return { postUpload, getImages, postRegister };
+  return { postUpload, getImages };
 };

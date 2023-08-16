@@ -1,7 +1,7 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TabNavigatorParams } from '@/types';
-import { FavouritesScreen } from '@/screens';
+import { FavouritesScreen, ProfileScreen } from '@/screens';
 import { HomeStack } from './HomeStack';
 
 export const TabNavigator = () => {
@@ -14,6 +14,7 @@ export const TabNavigator = () => {
     <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen name="HomeStack" component={HomeStack} />
       <Tab.Screen name="FavouritesStack" component={FavouritesScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
