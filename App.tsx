@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { TabNavigator } from '@/navigation';
 import * as SecureStore from 'expo-secure-store';
 import { AuthContext } from '@/context/AuthContext';
@@ -8,9 +8,35 @@ import { HeaderButtonsProvider } from 'react-navigation-header-buttons';
 import { RootNavigatorParams } from '@/types';
 import { LoginScreen, RegisterScreen } from '@/screens';
 import { useAuthApi } from '@/hooks';
+import { authReducer } from '@/reducers/authReducer';
 
 export default function App({ navigation }) {
-  const { authState, dispatch, authContext } = useAuthApi();
+  // const { authState, dispatch, authContext } = useAuthApi();
+  const [authState, dispatch] = useReducer(authReducer, {
+    isLoading: true,
+    isSignout: false,
+    userToken: null,
+  });
+
+
+  // useEffect(() => {
+  //   const bootstrapAsync = async () => {
+  //     let userToken;
+
+  //     try {
+  //       userToken = await SecureStore.getItemAsync('userToken');
+  //     } catch (e) {
+  //       // Restoring token failed
+  //       console.log('========== RESTORE TOKEN ==========');
+  //       console.log('Restoring token failed', e);
+  //       console.log('===================================');
+  //     }
+
+  //     dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+  //   };
+
+  //   bootstrapAsync();
+  // }, []);
 
   useEffect(() => {
     const bootstrapAsync = async () => {
@@ -19,24 +45,29 @@ export default function App({ navigation }) {
       try {
         userToken = await SecureStore.getItemAsync('userToken');
       } catch (e) {
-        // Restoring token failed
+        console.log('========== RESTORE TOKEN ==========');
+        console.log('Restoring token failed', e);
+        console.log('===================================');
       }
 
-      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+      dispatch({ type: 'INITIALIZE', token: userToken });
     };
 
     bootstrapAsync();
   }, []);
+
   console.log('========== APP AUTH STATE ==========');
   console.log('VALUE', authState);
+  console.log('TIME', Date().toString());
   console.log('====================================');
   const Stack = createNativeStackNavigator<RootNavigatorParams>();
   const screenOptions = {
     headerShown: true,
     headerLargeTitle: true,
+    animationTypeForReplace: authState.isSignout ? 'pop' : 'push',
   };
   return (
-    <AuthContext.Provider value={authContext}>
+    // <AuthContext.Provider value={authContext}>
       <NavigationContainer>
         <HeaderButtonsProvider stackType="native">
           <Stack.Navigator screenOptions={screenOptions}>
@@ -51,6 +82,6 @@ export default function App({ navigation }) {
           </Stack.Navigator>
         </HeaderButtonsProvider>
       </NavigationContainer>
-    </AuthContext.Provider>
+    // </AuthContext.Provider>
   );
 }

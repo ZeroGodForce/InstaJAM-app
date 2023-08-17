@@ -5,31 +5,37 @@ import { API_URL } from '@env';
 import { authReducer } from '@/reducers/authReducer';
 
 export const useAuthApi = () => {
-  const baseURL = API_URL;
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [authState, dispatch] = useReducer(authReducer, {
-    isLoading: true,
-    isSignout: false,
-    userToken: null,
-  });
+    const baseURL = API_URL;
+    const [isProcessing, setIsProcessing] = useState<boolean>(false);
+    const [authState, dispatch] = useReducer(authReducer, {
+      isLoading: true,
+      isSignout: false,
+      userToken: null,
+    });
+  
+    const authContext = useMemo(
+      () => ({
+        signIn: async (data) => {
+          dispatch({ type: 'SIGN_IN', token: data });
+          await SecureStore.setItemAsync('userToken', data);
+        },
+        signOut: async () => {
+          dispatch({ type: 'SIGN_OUT' });
+          await SecureStore.deleteItemAsync('userToken');
+        },
+        signUp: async (data) => {
+          dispatch({ type: 'SIGN_IN', token: data });
+          await SecureStore.setItemAsync('userToken', data);
+        },
+      }),
+      []
+    );
 
-  const authContext = useMemo(
-    () => ({
-      signIn: async (data) => {
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
-      },
-      signOut: () => dispatch({ type: 'SIGN_OUT' }),
-      signUp: async (data) => {
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
-      },
-    }),
-    []
-  );
-
+  // REGISTER NEW USER
   const postRegister = async (formikValues?: any): Promise<void> => {
-    console.log('========== REGISTER ==========');
-    console.log('VALUES', formikValues);
-    console.log('==============================');
+    // console.log('========== REGISTER ==========');
+    // console.log('VALUES', formikValues);
+    // console.log('==============================');
 
     try {
       setIsProcessing(true);
@@ -53,12 +59,13 @@ export const useAuthApi = () => {
       console.log('========== OLD AUTH STATE ==========');
       console.log('OLD VALUE', authState);
       console.log('====================================');
+
+
+      // Log the new user in
       const userToken = response.data.data.token;
-      await SecureStore.setItemAsync('userToken', userToken);
-      dispatch({ type: 'SIGN_IN', token: userToken });
-      console.log('========== NEW AUTH STATE ==========');
-      console.log('NEW VALUE', authState);
-      console.log('====================================');
+      // await SecureStore.setItemAsync('userToken', userToken);
+      authContext.signUp(userToken);
+
     } catch (error) {
       console.error('Error submitting registration:', error);
     } finally {
@@ -66,10 +73,11 @@ export const useAuthApi = () => {
     }
   };
 
+  // LOGIN USER
   const postLogin = async (formikValues?: any): Promise<void> => {
-    console.log('========== LOGIN ==========');
-    console.log('VALUES', formikValues);
-    console.log('==============================');
+    // console.log('========== LOGIN ==========');
+    // console.log('VALUES', formikValues);
+    // console.log('===========================');
 
     try {
       setIsProcessing(true);
@@ -92,12 +100,12 @@ export const useAuthApi = () => {
       console.log('========== OLD AUTH STATE ==========');
       console.log('OLD VALUE', authState);
       console.log('====================================');
+
+      // Save the token and log the user in
       const userToken = response.data.data.token;
-      await SecureStore.setItemAsync('userToken', userToken);
-      dispatch({ type: 'SIGN_IN', token: userToken });
-      console.log('========== NEW AUTH STATE ==========');
-      console.log('NEW VALUE', authState);
-      console.log('====================================');
+      // await SecureStore.setItemAsync('userToken', userToken);
+      authContext.signIn(userToken);
+
     } catch (error) {
       console.error('Error submitting registration:', error);
     } finally {
@@ -105,6 +113,7 @@ export const useAuthApi = () => {
     }
   };
 
+  // LOGOUT USER
   const deleteLogout = async (): Promise<void> => {
     try {
       setIsProcessing(true);
@@ -118,17 +127,13 @@ export const useAuthApi = () => {
         }
       })
 
-      console.log('======= LOGOUT RESPONSE =======');
-      console.log('RESPONSE', JSON.stringify(response.data.data, null, 2));
-      console.log('===============================');
       console.log('========== OLD AUTH STATE ==========');
       console.log('OLD VALUE', authState);
       console.log('====================================');
-      await SecureStore.deleteItemAsync('userToken');
-      dispatch({ type: 'SIGN_OUT' });
-      console.log('========== NEW AUTH STATE ==========');
-      console.log('NEW VALUE', authState);
-      console.log('====================================');
+
+      authContext.signOut();
+      // await SecureStore.deleteItemAsync('userToken');
+
     } catch (error) {
       console.error('Error signing out:', error);
     } finally {
@@ -136,5 +141,5 @@ export const useAuthApi = () => {
     }
   };
 
-  return { authState, dispatch, postRegister, postLogin, deleteLogout };
+  return { authContext, authState, dispatch, postRegister, postLogin, deleteLogout };
 };
