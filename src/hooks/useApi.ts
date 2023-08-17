@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
+import * as SecureStore from 'expo-secure-store';
 import { API_URL } from '@env';
 
 export const useApi = () => {
@@ -12,6 +13,8 @@ export const useApi = () => {
     console.log('==============================');
 
     try {
+      const userToken = await SecureStore.getItemAsync('userToken');
+
       setIsProcessing(true);
 
       const form = new FormData();
@@ -26,12 +29,13 @@ export const useApi = () => {
       const response = await axios.post(`${baseURL}/upload`, form, {
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${userToken}`
         }
       })
 
       console.log('=========== POST =============');
-      console.log('RESPONSE', response.data);
+      console.log('RESPONSE', response.data.data);
       console.log('==============================');
 
     } catch (error) {
@@ -43,12 +47,19 @@ export const useApi = () => {
 
   const getImages = async (): Promise<any[]> => {
     try {
-      const response = await axios.get(`${baseURL}/images`);
+      const userToken = await SecureStore.getItemAsync('userToken');
+      const response = await axios.get(`${baseURL}/images`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${userToken}`
+        }
+      });
       console.log('=========== GET IMAGES =========');
-      console.log('GET RESPONSE', response.data);
+      console.log('GET RESPONSE', response.data.data);
       console.log('================================');
 
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error('Error retrieving images:', error.response ? error.response.data : error.message);
       throw error;

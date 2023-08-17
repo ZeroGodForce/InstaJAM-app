@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useMemo, useReducer, useState } from 'react';
+import { useMemo, useReducer, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { API_URL } from '@env';
 import { authReducer } from '@/reducers/authReducer';
@@ -50,11 +50,15 @@ export const useAuthApi = () => {
       console.log('======= REGISTER RESPONSE =======');
       console.log('RESPONSE', JSON.stringify(response.data.data, null, 2));
       console.log('=================================');
-
+      console.log('========== OLD AUTH STATE ==========');
+      console.log('OLD VALUE', authState);
+      console.log('====================================');
       const userToken = response.data.data.token;
       await SecureStore.setItemAsync('userToken', userToken);
       dispatch({ type: 'SIGN_IN', token: userToken });
-
+      console.log('========== NEW AUTH STATE ==========');
+      console.log('NEW VALUE', authState);
+      console.log('====================================');
     } catch (error) {
       console.error('Error submitting registration:', error);
     } finally {
@@ -85,11 +89,15 @@ export const useAuthApi = () => {
       console.log('======= LOGIN RESPONSE =======');
       console.log('RESPONSE', JSON.stringify(response.data.data, null, 2));
       console.log('==============================');
-
+      console.log('========== OLD AUTH STATE ==========');
+      console.log('OLD VALUE', authState);
+      console.log('====================================');
       const userToken = response.data.data.token;
       await SecureStore.setItemAsync('userToken', userToken);
       dispatch({ type: 'SIGN_IN', token: userToken });
-
+      console.log('========== NEW AUTH STATE ==========');
+      console.log('NEW VALUE', authState);
+      console.log('====================================');
     } catch (error) {
       console.error('Error submitting registration:', error);
     } finally {
