@@ -19,11 +19,9 @@ const checkDirectoryExists = async () => {
 };
 
 export const UploadFormScreen = ({ navigation }) => {
-  const [uploading, setUploading] = useState(false);
   const [images, setImages] = useState<any[]>([])
   const [preview, setPreview] = useState<string>();
   const { postUpload } = useApi();
-
 
   useEffect(() => {
     loadImages();
@@ -65,10 +63,6 @@ export const UploadFormScreen = ({ navigation }) => {
       result = await ImagePicker.launchCameraAsync(options);
     }
 
-    console.log('====================================');
-    console.log('PHOTO SELECTION RESULT', result);
-    console.log('====================================');
-
     if (result.assets) {
       previewImage(result.assets[0].uri);
     }
@@ -77,20 +71,6 @@ export const UploadFormScreen = ({ navigation }) => {
       handleChange(result.assets[0].uri);
     }
   }
-
-  // const saveImage = async (uri: string) => {
-  //   await checkDirectoryExists();
-  //   const filename = new Date().getTime() + '.jpeg';
-  //   const dest = imagesDirectory + filename;
-  //   await FileSystem.copyAsync({ from: uri, to: dest });
-  //   setImages([...images, dest]);
-  // };
-
-  // const uploadImage = async (uri: string) => {
-  //   setUploading(true);
-  //   await postUpload(uri);
-  //   setUploading(false);
-  // };
 
   const deleteImage = async (uri: string) => {
     await FileSystem.deleteAsync(uri);
