@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react'
-import { Button, StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Formik } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DebugBar } from '@/components';
 import { useAuthApi } from '@/hooks';
+import { Button, TextInput } from 'react-native-paper';
 
 export const RegisterScreen = ({ navigation }) => {
   const { postRegister } = useAuthApi();
@@ -35,7 +36,6 @@ export const RegisterScreen = ({ navigation }) => {
             <DebugBar data={values} />
             <View style={styles.inputContainer}>
               <TextInput
-                style={styles.input}
                 value={values.name}
                 onChangeText={handleChange('name')}
                 placeholder="Name"
@@ -43,7 +43,7 @@ export const RegisterScreen = ({ navigation }) => {
             </View>
             <View style={styles.inputContainer}>
               <TextInput
-                style={styles.input}
+                mode="outlined"
                 value={values.email}
                 onChangeText={handleChange('email')}
                 textContentType="emailAddress"
@@ -62,8 +62,10 @@ export const RegisterScreen = ({ navigation }) => {
                 placeholder="Password"
               />
             </View>
-            <View style={styles.buttons}>
-              <Button onPress={handleSubmit} title="Submit" />
+            <View>
+              <Button mode="contained" onPress={handleSubmit}>
+                Submit
+              </Button>
             </View>
           </View>
         )}

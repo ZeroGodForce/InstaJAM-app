@@ -1,12 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react'
-import { Button, Image, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { Formik } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { DebugBar } from '@/components';
 import { useApi } from '@/hooks';
+import { Button, Divider, TextInput } from 'react-native-paper';
 
 const imagesDirectory = FileSystem.documentDirectory + 'images/';
 
@@ -102,7 +103,7 @@ export const UploadFormScreen = ({ navigation }) => {
       <Formik
         initialValues={{ image: '', title: '', description: '' }}
         onSubmit={async (values, { setSubmitting }) => {
-          setSubmitting(true); // Set submitting state to true during form submission
+          setSubmitting(true);
 
           try {
             await postUpload(values);
@@ -115,7 +116,7 @@ export const UploadFormScreen = ({ navigation }) => {
 
             console.error('Error uploading file', error);
           } finally {
-            setSubmitting(false); // Set submitting state back to false after submission (whether success or error)
+            setSubmitting(false);
           }
         }}
       >
@@ -123,24 +124,30 @@ export const UploadFormScreen = ({ navigation }) => {
           <View>
             <DebugBar data={values} />
             <Image style={{ width: 80, height: 80 }} source={{ uri: preview }} />
+            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 20 }}>
+              <Button mode="contained" onPress={() => selectImage(handleChange('image'), true)}>
+                Photo Library
+              </Button>
+              <Button mode="contained" onPress={() => selectImage(handleChange('image'), false)}>
+                Capture Image
+              </Button>
+            </View>
             <TextInput
+              mode="outlined"
               placeholder="Title"
               onChangeText={handleChange('title')}
               onBlur={handleBlur('title')}
               value={values.title}
             />
             <TextInput
+              mode="outlined"
               placeholder="Photo description"
               onChangeText={handleChange('description')}
               onBlur={handleBlur('description')}
               value={values.description}
               multiline={true}
             />
-            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 20 }}>
-              <Button title="Photo Library" onPress={() => selectImage(handleChange('image'), true)} />
-              <Button title="Capture Image" onPress={() => selectImage(handleChange('image'), false)} />
-            </View>
-            <Button onPress={handleSubmit} title="Submit" />
+            <Button mode="contained" onPress={handleSubmit}>Submit</Button>
           </View>
         )}
       </Formik>

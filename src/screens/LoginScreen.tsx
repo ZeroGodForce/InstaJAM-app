@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react'
-import { Button, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Formik } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DebugBar } from '@/components';
 import { useAuthApi } from '@/hooks';
+import { Button, TextInput } from 'react-native-paper';
 
 export const LoginScreen = ({ navigation }) => {
   const { postLogin } = useAuthApi();
@@ -36,7 +37,7 @@ export const LoginScreen = ({ navigation }) => {
               <DebugBar data={values} />
               <View style={styles.inputContainer}>
                 <TextInput
-                  style={styles.input}
+                  mode="outlined"
                   value={values.email}
                   onChangeText={handleChange('email')}
                   textContentType="emailAddress"
@@ -46,15 +47,17 @@ export const LoginScreen = ({ navigation }) => {
               </View>
               <View style={styles.inputContainer}>
                 <TextInput
-                  style={styles.input}
+                  mode="outlined"
                   value={values.password}
                   onChangeText={handleChange('password')}
                   secureTextEntry
                   textContentType="password"
                   placeholder="Password" />
               </View>
-              <View style={styles.buttons}>
-                <Button onPress={handleSubmit} title="Submit" />
+              <View>
+                <Button mode="contained" onPress={handleSubmit}>
+                  Submit
+                </Button>
               </View>
             </View>
           );

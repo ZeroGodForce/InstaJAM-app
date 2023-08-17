@@ -9,6 +9,7 @@ import { RootNavigatorParams } from '@/types';
 import { LoginScreen, RegisterScreen } from '@/screens';
 import { useAuthApi } from '@/hooks';
 import { authReducer } from '@/reducers/authReducer';
+import { PaperProvider } from 'react-native-paper';
 
 export default function App({ navigation }) {
   // const { authState, dispatch, authContext } = useAuthApi();
@@ -68,6 +69,7 @@ export default function App({ navigation }) {
   };
   return (
     // <AuthContext.Provider value={authContext}>
+    <PaperProvider>
       <NavigationContainer>
         <HeaderButtonsProvider stackType="native">
           <Stack.Navigator screenOptions={screenOptions}>
@@ -82,6 +84,7 @@ export default function App({ navigation }) {
           </Stack.Navigator>
         </HeaderButtonsProvider>
       </NavigationContainer>
+    </PaperProvider>
     // </AuthContext.Provider>
   );
 }
