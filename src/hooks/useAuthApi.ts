@@ -97,27 +97,30 @@ export const useAuthApi = () => {
     }
   };
 
-  const postLogout = async (): Promise<void> => {
+  const deleteLogout = async (): Promise<void> => {
     try {
       setIsProcessing(true);
+      const userToken = await SecureStore.getItemAsync('userToken');
 
-      const data = {
-        email: 'logout',
-      }
-
-      const response = await axios.post(`${baseURL}/logout`, data, {
+      const response = await axios.delete(`${baseURL}/logout`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`,
         }
       })
 
       console.log('======= LOGOUT RESPONSE =======');
       console.log('RESPONSE', JSON.stringify(response.data.data, null, 2));
       console.log('===============================');
-
+      console.log('========== OLD AUTH STATE ==========');
+      console.log('OLD VALUE', authState);
+      console.log('====================================');
+      await SecureStore.deleteItemAsync('userToken');
       dispatch({ type: 'SIGN_OUT' });
-
+      console.log('========== NEW AUTH STATE ==========');
+      console.log('NEW VALUE', authState);
+      console.log('====================================');
     } catch (error) {
       console.error('Error signing out:', error);
     } finally {
@@ -125,5 +128,5 @@ export const useAuthApi = () => {
     }
   };
 
-  return { authState, dispatch, authContext, postRegister, postLogin, postLogout };
+  return { authState, dispatch, postRegister, postLogin, deleteLogout };
 };

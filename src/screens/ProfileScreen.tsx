@@ -5,8 +5,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthApi } from '@/hooks';
 
 export const ProfileScreen = ({ navigation }) => {
-    const { postLogout } = useAuthApi();
-    const handleLogOut = async () => { }
+    const { deleteLogout } = useAuthApi();
+    const handleLogOut = async () => {
+        await deleteLogout()
+    }
 
     return (
         <SafeAreaView style={styles.container}>
