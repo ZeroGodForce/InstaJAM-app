@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native';
 import { Formik } from 'formik';
@@ -79,7 +78,6 @@ export const UploadFormScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
       <Formik
         initialValues={{ image: '', title: '', description: '' }}
         onSubmit={async (values, { setSubmitting }) => {

@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react'
 import { StyleSheet, View } from 'react-native';
 import { Formik } from 'formik';
@@ -12,7 +11,6 @@ export const RegisterScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
       <Formik
         initialValues={{ name: '', email: '', password: '' }}
         onSubmit={async (values, { setSubmitting }) => {

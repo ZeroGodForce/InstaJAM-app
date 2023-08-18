@@ -10,6 +10,7 @@ import { LoginScreen, RegisterScreen } from '@/screens';
 import { useAuthApi } from '@/hooks';
 import { authReducer } from '@/reducers/authReducer';
 import { PaperProvider } from 'react-native-paper';
+import { StatusBar } from 'expo-status-bar';
 
 export default function App({ navigation }) {
   // const { authState, dispatch, authContext } = useAuthApi();
@@ -70,6 +71,7 @@ export default function App({ navigation }) {
   return (
     // <AuthContext.Provider value={authContext}>
     <PaperProvider>
+      <StatusBar style="auto" />
       <NavigationContainer>
         <HeaderButtonsProvider stackType="native">
           <Stack.Navigator screenOptions={screenOptions}>

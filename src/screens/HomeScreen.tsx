@@ -1,7 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Dimensions, FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { StatusBar } from 'expo-status-bar';
 import { MaterialHeaderButton } from '@/components'
 import { useApi } from '@/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -79,7 +78,6 @@ export const HomeScreen = ({ navigation }) => {
           numColumns={2}
         />
       </View>
-      <StatusBar style="auto" />
     </SafeAreaView>
   )
 }

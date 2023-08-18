@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Formik } from 'formik';
@@ -12,7 +11,6 @@ export const LoginScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
       <Formik
         initialValues={{ email: 'hello@instajam.com', password: 'change-me' }}
         onSubmit={async (values, { setSubmitting }) => {
