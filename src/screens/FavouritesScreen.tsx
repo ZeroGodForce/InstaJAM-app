@@ -1,70 +1,111 @@
-import React from 'react'
-import { View, StyleSheet, ImageBackground } from 'react-native';
-import { ToggleButton, List } from 'react-native-paper';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { Dimensions, FlatList, Image, Pressable, StyleSheet, View } from 'react-native';
+import { useApi } from '@/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ImageData } from '@/types';
 
-type Fruits = 'watermelon' | 'strawberries';
 
-export const FavouritesScreen = () => {
-  const [fruit, setFruit] = React.useState<Fruits>('watermelon');
-  const handleFruit = (value: Fruits) => setFruit(value);
+export const FavouritesScreen = ({ navigation }) => {
+  const { getFavourites } = useApi();
+  const [images, setImages] = useState<ImageData[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useLayoutEffect(() => {
+    // navigation.setOptions({
+    //   headerShown:true,
+    //   headerLargeTitle: true
+    // });
+  }, [navigation]);
+
+  useEffect(() => {
+    fetchAndSetImages();
+  }, []);
+
+  const fetchAndSetImages = async () => {
+    try {
+      const fetchedImages = await getFavourites();
+      setImages(fetchedImages);
+    } catch (error) {
+      console.error("Error fetching images:", error);
+    }
+  };
+
+  const handleRefresh = async (imageSet: ImageData[] | null = null) => {
+    setRefreshing(true);
+    if (imageSet) {
+      setImages(imageSet);
+    } else {
+      await fetchAndSetImages();
+    }
+    setRefreshing(false);
+  };
+
+  const imageGrid = images.map(item => ({
+    uuid: item.uuid,
+    title: item.title,
+    description: item.description,
+    imagePath: item.imagePath,
+    favourite: item.favourite,
+  }));
+
+  const renderItem = ({ item }: { item: ImageData }) => {
+    return (
+      <Pressable
+        onPress={() => navigation.navigate('Image', {
+          title: item.title,
+          description: item.description,
+          imagePath: item.imagePath,
+          options: {
+            headerShown: false
+          }
+        })}
+        style={styles.item}
+      >
+        <Image
+          source={{ uri: item.imagePath }}
+          style={styles.photo}
+          accessibilityIgnoresInvertColors
+        />
+      </Pressable>
+    );
+  };
 
   return (
-    <SafeAreaView>
-      <List.Section title="Custom & union types">
-        <View style={[styles.padding, styles.row]}>
-          <ToggleButton.Group value={fruit} onValueChange={handleFruit}>
-            <ImageBackground
-              style={styles.customImage}
-              source={{
-                uri: 'https://images.pexels.com/photos/5946081/pexels-photo-5946081.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-              }}
-            >
-              <ToggleButton
-                value="watermelon"
-                size={24}
-                style={styles.customButton}
-                iconColor="white"
-                icon={fruit === 'watermelon' ? 'heart' : 'heart-outline'}
-              />
-            </ImageBackground>
-            <ImageBackground
-              style={styles.customImage}
-              source={{
-                uri: 'https://images.pexels.com/photos/46174/strawberries-berries-fruit-freshness-46174.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
-              }}
-            >
-              <ToggleButton
-                value="strawberries"
-                size={24}
-                style={styles.customButton}
-                iconColor="white"
-                icon={fruit === 'strawberries' ? 'heart' : 'heart-outline'}
-              />
-            </ImageBackground>
-          </ToggleButton.Group>
-        </View>
-      </List.Section>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.grid}>
+        <FlatList
+          data={imageGrid}
+          renderItem={renderItem}
+          keyExtractor={item => item.uuid}
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          numColumns={2}
+        />
+      </View>
     </SafeAreaView>
-  );
-};
-
-FavouritesScreen.title = 'Toggle Button';
+  )
+}
 
 const styles = StyleSheet.create({
-  padding: {
-    paddingHorizontal: 16,
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  row: {
+  grid: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
+    padding: 4,
+    backgroundColor: '#aeaeae',
   },
-  customImage: {
-    width: 143,
-    height: 153,
-    margin: 2,
+  item: {
+    height: Dimensions.get('window').width / 2,
+    width: '50%',
+    padding: 4,
   },
-  customButton: {
-    position: 'absolute',
-    right: 0,
+  photo: {
+    flex: 1,
+    resizeMode: 'cover',
   },
 });
