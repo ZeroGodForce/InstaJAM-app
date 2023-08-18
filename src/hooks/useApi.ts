@@ -2,10 +2,12 @@ import axios from 'axios';
 import { useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { API_URL } from '@env';
+import { useAuthApi } from './useAuthApi';
 
 export const useApi = () => {
   const baseURL = API_URL;
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const { deleteLogout } = useAuthApi();
 
   const postUpload = async (formikValues?: any): Promise<void> => {
     try {
@@ -49,7 +51,21 @@ export const useApi = () => {
 
       return response.data.data;
     } catch (error) {
-      console.error('Error retrieving images:', error.response ? error.response.data : error.message);
+      if (error.response) {
+        if (error.response.data.status === 401) {
+          // If the user is unauthorised boot them
+          await deleteLogout();
+        }
+
+        console.log('============ RESPONSE ERROR ============');
+        console.error('DATA', JSON.stringify(error.response.data, null, 2));
+        console.log('STATUS CODE', error.response.status);
+        console.log('========================================');
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('ERROR MESSAGE', error.message);
+      }
+
       throw error;
     }
   };
