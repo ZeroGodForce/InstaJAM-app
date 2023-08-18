@@ -26,7 +26,7 @@ export const useApi = () => {
         name: 'file_image.jpg'
       } as any);
 
-      const response = await axios.post(`${baseURL}/upload`, form, {
+      const response = await axios.post(`${baseURL}/images`, form, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'multipart/form-data',
