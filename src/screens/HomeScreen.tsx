@@ -5,14 +5,8 @@ import { MaterialHeaderButton } from '@/components'
 import { useApi } from '@/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FAB, ToggleButton } from 'react-native-paper';
+import { ImageData } from '@/types';
 
-type ImageData = {
-  uuid: string;
-  title: string;
-  description: string;
-  imagePath: string;
-  favourite: boolean;
-};
 
 export const HomeScreen = ({ navigation }) => {
   const { getImages, putFavourite } = useApi();
