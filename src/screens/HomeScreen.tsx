@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
   },
   customButton: {
     position: 'absolute',
-    right: 0,
+    right: 5,
+    top: 5,
   },
 });
