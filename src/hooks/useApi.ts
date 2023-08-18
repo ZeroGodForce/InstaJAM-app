@@ -66,6 +66,28 @@ export const useApi = () => {
     }
   };
 
+
+  const getFavourites = async (): Promise<any[]> => {
+    try {
+      const userToken = await SecureStore.getItemAsync('userToken');
+      const response = await axios.get(`${baseURL}/images?filter=favourites`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`
+        }
+      });
+      console.log('=========== GET IMAGES =========');
+      console.log('GET RESPONSE', JSON.stringify(response.data.data, null, 2));
+      console.log('================================');
+
+      return response.data.data;
+    } catch (error) {
+      console.error('Error retrieving images:', error.response ? error.response.data : error.message);
+      throw error;
+    }
+  };
+
   const putFavourite = async (image): Promise<any[]> => {
     console.log('=========== PUT =============');
     console.log('IMAGE FAVOURITE', image);
@@ -100,5 +122,5 @@ export const useApi = () => {
     }
   };
 
-  return { postUpload, getImages, putFavourite };
+  return { postUpload, getImages, getFavourites, putFavourite };
 };
