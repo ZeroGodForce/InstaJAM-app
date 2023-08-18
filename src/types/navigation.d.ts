@@ -1,5 +1,6 @@
 export type FavouritesStackParams = {
   Favourites: undefined
+  Image: { uuid: string }
 }
 
 export type HomeStackParams = {
