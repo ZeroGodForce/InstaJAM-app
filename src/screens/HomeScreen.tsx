@@ -1,15 +1,17 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { Dimensions, FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Dimensions, FlatList, Image, Pressable, StyleSheet, View } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { MaterialHeaderButton } from '@/components'
 import { useApi } from '@/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { FAB, ToggleButton } from 'react-native-paper';
 
 type ImageData = {
   uuid: string;
   title: string;
   description: string;
   imagePath: string;
+  favourite: boolean;
 };
 
 export const HomeScreen = ({ navigation }) => {
@@ -33,6 +35,7 @@ export const HomeScreen = ({ navigation }) => {
   }, []);
 
   const fetchAndSetImages = async () => {
+    // TODO: ACCEPT OPTIONAL PARAM TO SET FETCHED IMAGES IF PASSED DATA MANUALLY
     try {
       const fetchedImages = await getImages();
       setImages(fetchedImages);
@@ -47,22 +50,43 @@ export const HomeScreen = ({ navigation }) => {
     setRefreshing(false);
   };
 
+  const onButtonToggle = (item: ImageData) => {
+    console.log('======= FAVOURITE TOGGLE =======');
+    console.log('VALUE', JSON.stringify(item, null, 2));
+    console.log('CURRENT FAVOURITE VALUE', item.favourite);
+    // TODO: INSTEAD OF DOING THIS LOCAL, JUST MAKE SERVER CALL AND TRIGGER A REFRESH AT THE END
+    item.favourite = !item.favourite;
+
+    console.log('NEW FAVOURITE VALUE', item.favourite);
+    console.log('================================');
+  };
+
   const imageGrid = images.map(item => ({
     uuid: item.uuid,
     title: item.title,
     description: item.description,
     imagePath: item.imagePath,
+    favourite: item.favourite,
   }));
 
   const renderItem = ({ item }: { item: ImageData }) => {
     return (
-      <TouchableOpacity onPress={() => alert(item.uuid)} style={styles.item}>
+      <Pressable onPress={() => alert(item.uuid)} style={styles.item}>
         <Image
           source={{ uri: item.imagePath }}
           style={styles.photo}
           accessibilityIgnoresInvertColors
         />
-      </TouchableOpacity>
+        <ToggleButton
+          value={item.uuid}
+          size={24}
+          style={styles.customButton}
+          iconColor="white"
+          icon={item.favourite === true ? 'heart' : 'heart-outline'}
+          status={item.favourite === true ? 'checked' : 'unchecked'}
+          onPress={()=> onButtonToggle(item)}
+        />
+      </Pressable>
     );
   };
 
@@ -78,6 +102,12 @@ export const HomeScreen = ({ navigation }) => {
           numColumns={2}
         />
       </View>
+      <FAB
+        icon="plus"
+        size="small"
+        style={styles.fab}
+        onPress={() => navigation.navigate('UploadForm')}
+      />
     </SafeAreaView>
   )
 }
@@ -103,5 +133,15 @@ const styles = StyleSheet.create({
   photo: {
     flex: 1,
     resizeMode: 'cover',
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
+  customButton: {
+    position: 'absolute',
+    right: 0,
   },
 });
