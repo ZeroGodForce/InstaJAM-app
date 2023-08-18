@@ -15,7 +15,7 @@ type ImageData = {
 };
 
 export const HomeScreen = ({ navigation }) => {
-  const { getImages } = useApi();
+  const { getImages, putFavourite } = useApi();
   const [images, setImages] = useState<ImageData[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -35,7 +35,6 @@ export const HomeScreen = ({ navigation }) => {
   }, []);
 
   const fetchAndSetImages = async () => {
-    // TODO: ACCEPT OPTIONAL PARAM TO SET FETCHED IMAGES IF PASSED DATA MANUALLY
     try {
       const fetchedImages = await getImages();
       setImages(fetchedImages);
@@ -44,18 +43,24 @@ export const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const handleRefresh = async () => {
+  const handleRefresh = async (imageSet: ImageData[] | null = null) => {
     setRefreshing(true);
-    await fetchAndSetImages();
+    if (imageSet) {
+      setImages(imageSet);
+    } else {
+      await fetchAndSetImages();
+    }
     setRefreshing(false);
   };
 
-  const onButtonToggle = (item: ImageData) => {
+  const onButtonToggle = async (item: ImageData) => {
     console.log('======= FAVOURITE TOGGLE =======');
     console.log('VALUE', JSON.stringify(item, null, 2));
     console.log('CURRENT FAVOURITE VALUE', item.favourite);
-    // TODO: INSTEAD OF DOING THIS LOCAL, JUST MAKE SERVER CALL AND TRIGGER A REFRESH AT THE END
     item.favourite = !item.favourite;
+    const updatedImages = await putFavourite(item);
+
+    handleRefresh(updatedImages);
 
     console.log('NEW FAVOURITE VALUE', item.favourite);
     console.log('================================');
@@ -84,7 +89,7 @@ export const HomeScreen = ({ navigation }) => {
           iconColor="white"
           icon={item.favourite === true ? 'heart' : 'heart-outline'}
           status={item.favourite === true ? 'checked' : 'unchecked'}
-          onPress={()=> onButtonToggle(item)}
+          onPress={() => onButtonToggle(item)}
         />
       </Pressable>
     );

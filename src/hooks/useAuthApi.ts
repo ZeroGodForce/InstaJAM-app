@@ -5,31 +5,31 @@ import { API_URL } from '@env';
 import { authReducer } from '@/reducers/authReducer';
 
 export const useAuthApi = () => {
-    const baseURL = API_URL;
-    const [isProcessing, setIsProcessing] = useState<boolean>(false);
-    const [authState, dispatch] = useReducer(authReducer, {
-      isLoading: true,
-      isSignout: false,
-      userToken: null,
-    });
-  
-    const authContext = useMemo(
-      () => ({
-        signIn: async (data) => {
-          dispatch({ type: 'SIGN_IN', token: data });
-          await SecureStore.setItemAsync('userToken', data);
-        },
-        signOut: async () => {
-          dispatch({ type: 'SIGN_OUT' });
-          await SecureStore.deleteItemAsync('userToken');
-        },
-        signUp: async (data) => {
-          dispatch({ type: 'SIGN_IN', token: data });
-          await SecureStore.setItemAsync('userToken', data);
-        },
-      }),
-      []
-    );
+  const baseURL = API_URL;
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [authState, dispatch] = useReducer(authReducer, {
+    isLoading: true,
+    isSignout: false,
+    userToken: null,
+  });
+
+  const authContext = useMemo(
+    () => ({
+      signIn: async (data) => {
+        dispatch({ type: 'SIGN_IN', token: data });
+        await SecureStore.setItemAsync('userToken', data);
+      },
+      signOut: async () => {
+        dispatch({ type: 'SIGN_OUT' });
+        await SecureStore.deleteItemAsync('userToken');
+      },
+      signUp: async (data) => {
+        dispatch({ type: 'SIGN_IN', token: data });
+        await SecureStore.setItemAsync('userToken', data);
+      },
+    }),
+    []
+  );
 
   // REGISTER NEW USER
   const postRegister = async (formikValues?: any): Promise<void> => {

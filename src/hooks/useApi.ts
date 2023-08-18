@@ -35,7 +35,7 @@ export const useApi = () => {
       })
 
       console.log('=========== POST =============');
-      console.log('RESPONSE', response.data.data);
+      console.log('RESPONSE', JSON.stringify(response.data.data, null, 2));
       console.log('==============================');
 
     } catch (error) {
@@ -51,12 +51,12 @@ export const useApi = () => {
       const response = await axios.get(`${baseURL}/images`, {
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${userToken}`
         }
       });
       console.log('=========== GET IMAGES =========');
-      console.log('GET RESPONSE', response.data.data);
+      console.log('GET RESPONSE', JSON.stringify(response.data.data, null, 2));
       console.log('================================');
 
       return response.data.data;
@@ -66,5 +66,39 @@ export const useApi = () => {
     }
   };
 
-  return { postUpload, getImages };
+  const putFavourite = async (image): Promise<any[]> => {
+    console.log('=========== PUT =============');
+    console.log('IMAGE FAVOURITE', image);
+    console.log('==============================');
+    const userToken = await SecureStore.getItemAsync('userToken');
+
+    try {
+      setIsProcessing(true);
+
+      const data = {
+        uuid: image.uuid,
+        favourite: image.favourite,
+      }
+
+      const response = await axios.put(`${baseURL}/images/${image.uuid}/favourite`, data, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`
+        }
+      })
+
+      console.log('=========== FAVOURITE RESPONSE =========');
+      console.log('GET RESPONSE', JSON.stringify(response.data.data, null, 2));
+      console.log('================================');
+
+      return response.data.data;
+    } catch (error) {
+      console.error('Error updating favourite image:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return { postUpload, getImages, putFavourite };
 };
