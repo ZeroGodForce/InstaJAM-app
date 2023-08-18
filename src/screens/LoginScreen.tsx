@@ -17,12 +17,8 @@ export const LoginScreen = ({ navigation }) => {
           setSubmitting(true);
           try {
             await postLogin(values);
-            console.log('====================================');
-            console.log('SUBMITTED LOGIN VALUES', JSON.stringify(values, null, 2));
-            console.log('====================================');
           } catch (error) {
             alert('An error occurred during LOGIN. Please try again.');
-
             console.error('Error during LOGIN', error);
           } finally {
             setSubmitting(false);
@@ -31,7 +27,7 @@ export const LoginScreen = ({ navigation }) => {
       >
         {({ handleChange, handleSubmit, values }) => {
           return (
-            <View style={styles.content}>
+            <View>
               <DebugBar data={values} />
               <View style={styles.inputContainer}>
                 <TextInput
@@ -41,7 +37,8 @@ export const LoginScreen = ({ navigation }) => {
                   textContentType="emailAddress"
                   autoCapitalize="none"
                   autoCorrect={false}
-                  placeholder="Email" />
+                  placeholder="Email"
+                />
               </View>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -50,21 +47,21 @@ export const LoginScreen = ({ navigation }) => {
                   onChangeText={handleChange('password')}
                   secureTextEntry
                   textContentType="password"
-                  placeholder="Password" />
+                  placeholder="Password"
+                />
               </View>
               <View>
-                <Button mode="contained" onPress={handleSubmit}>
-                  Submit
-                </Button>
+                <Button mode="contained" onPress={handleSubmit}>Submit</Button>
               </View>
             </View>
           );
         }}
       </Formik>
-
-      <Pressable onPress={() => navigation.navigate('Register')}>
-        <Text>...or press here to create an account</Text>
-      </Pressable>
+      <View style={{}}>
+        <Pressable onPress={() => navigation.navigate('Register')}>
+          <Text>...or press here to create an account</Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   )
 }
@@ -92,13 +89,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 14,
   },
-  input: {
-    borderWidth: 1,
-    padding: 10,
-    height: 50,
-    marginVertical: 8,
-    borderRadius: 5,
-  },
+
   buttons: {
     marginTop: 16,
     flexDirection: 'row',

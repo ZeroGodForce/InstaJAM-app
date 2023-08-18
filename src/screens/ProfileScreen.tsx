@@ -1,7 +1,8 @@
 import React from 'react'
-import { Button, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthApi } from '@/hooks';
+import { Button } from 'react-native-paper';
 
 export const ProfileScreen = ({ navigation }) => {
     const { deleteLogout } = useAuthApi();
@@ -11,7 +12,7 @@ export const ProfileScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Button onPress={handleLogOut} title="Log out" />
+            <Button mode="outlined" onPress={handleLogOut}>Log out</Button>
         </SafeAreaView>
     )
 }
