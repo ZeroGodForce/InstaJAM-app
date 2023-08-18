@@ -33,10 +33,6 @@ export const useAuthApi = () => {
 
   // REGISTER NEW USER
   const postRegister = async (formikValues?: any): Promise<void> => {
-    // console.log('========== REGISTER ==========');
-    // console.log('VALUES', formikValues);
-    // console.log('==============================');
-
     try {
       setIsProcessing(true);
 
@@ -53,17 +49,8 @@ export const useAuthApi = () => {
         }
       })
 
-      console.log('======= REGISTER RESPONSE =======');
-      console.log('RESPONSE', JSON.stringify(response.data.data, null, 2));
-      console.log('=================================');
-      console.log('========== OLD AUTH STATE ==========');
-      console.log('OLD VALUE', authState);
-      console.log('====================================');
-
-
       // Log the new user in
       const userToken = response.data.data.token;
-      // await SecureStore.setItemAsync('userToken', userToken);
       authContext.signUp(userToken);
 
     } catch (error) {
@@ -75,10 +62,6 @@ export const useAuthApi = () => {
 
   // LOGIN USER
   const postLogin = async (formikValues?: any): Promise<void> => {
-    // console.log('========== LOGIN ==========');
-    // console.log('VALUES', formikValues);
-    // console.log('===========================');
-
     try {
       setIsProcessing(true);
 
@@ -94,16 +77,8 @@ export const useAuthApi = () => {
         }
       })
 
-      console.log('======= LOGIN RESPONSE =======');
-      console.log('RESPONSE', JSON.stringify(response.data.data, null, 2));
-      console.log('==============================');
-      console.log('========== OLD AUTH STATE ==========');
-      console.log('OLD VALUE', authState);
-      console.log('====================================');
-
       // Save the token and log the user in
       const userToken = response.data.data.token;
-      // await SecureStore.setItemAsync('userToken', userToken);
       authContext.signIn(userToken);
 
     } catch (error) {
@@ -127,13 +102,7 @@ export const useAuthApi = () => {
         }
       })
 
-      console.log('========== OLD AUTH STATE ==========');
-      console.log('OLD VALUE', authState);
-      console.log('====================================');
-
       authContext.signOut();
-      // await SecureStore.deleteItemAsync('userToken');
-
     } catch (error) {
       console.error('Error signing out:', error);
     } finally {

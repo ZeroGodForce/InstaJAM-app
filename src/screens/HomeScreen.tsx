@@ -48,16 +48,10 @@ export const HomeScreen = ({ navigation }) => {
   };
 
   const onButtonToggle = async (item: ImageData) => {
-    console.log('======= FAVOURITE TOGGLE =======');
-    console.log('VALUE', JSON.stringify(item, null, 2));
-    console.log('CURRENT FAVOURITE VALUE', item.favourite);
     item.favourite = !item.favourite;
     const updatedImages = await putFavourite(item);
 
     handleRefresh(updatedImages);
-
-    console.log('NEW FAVOURITE VALUE', item.favourite);
-    console.log('================================');
   };
 
   const imageGrid = images.map(item => ({

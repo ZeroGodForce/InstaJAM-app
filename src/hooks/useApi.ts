@@ -8,10 +8,6 @@ export const useApi = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   const postUpload = async (formikValues?: any): Promise<void> => {
-    console.log('=========== POST =============');
-    console.log('VALUES', formikValues);
-    console.log('==============================');
-
     try {
       const userToken = await SecureStore.getItemAsync('userToken');
 
@@ -33,11 +29,6 @@ export const useApi = () => {
           'Authorization': `Bearer ${userToken}`
         }
       })
-
-      console.log('=========== POST =============');
-      console.log('RESPONSE', JSON.stringify(response.data.data, null, 2));
-      console.log('==============================');
-
     } catch (error) {
       console.error('Error uploading:', error);
     } finally {
@@ -55,9 +46,6 @@ export const useApi = () => {
           'Authorization': `Bearer ${userToken}`
         }
       });
-      console.log('=========== GET IMAGES =========');
-      console.log('GET RESPONSE', JSON.stringify(response.data.data, null, 2));
-      console.log('================================');
 
       return response.data.data;
     } catch (error) {
@@ -77,9 +65,6 @@ export const useApi = () => {
           'Authorization': `Bearer ${userToken}`
         }
       });
-      console.log('=========== GET IMAGES =========');
-      console.log('GET RESPONSE', JSON.stringify(response.data.data, null, 2));
-      console.log('================================');
 
       return response.data.data;
     } catch (error) {
@@ -89,9 +74,6 @@ export const useApi = () => {
   };
 
   const putFavourite = async (image): Promise<any[]> => {
-    console.log('=========== PUT =============');
-    console.log('IMAGE FAVOURITE', image);
-    console.log('==============================');
     const userToken = await SecureStore.getItemAsync('userToken');
 
     try {
@@ -109,10 +91,6 @@ export const useApi = () => {
           'Authorization': `Bearer ${userToken}`
         }
       })
-
-      console.log('=========== FAVOURITE RESPONSE =========');
-      console.log('GET RESPONSE', JSON.stringify(response.data.data, null, 2));
-      console.log('================================');
 
       return response.data.data;
     } catch (error) {
