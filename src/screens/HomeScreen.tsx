@@ -6,7 +6,7 @@ import { useApi } from '@/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type ImageData = {
-  id: string;
+  uuid: string;
   title: string;
   description: string;
   imagePath: string;
@@ -48,7 +48,7 @@ export const HomeScreen = ({ navigation }) => {
   };
 
   const imageGrid = images.map(item => ({
-    id: item.id,
+    uuid: item.uuid,
     title: item.title,
     description: item.description,
     imagePath: item.imagePath,
@@ -56,7 +56,7 @@ export const HomeScreen = ({ navigation }) => {
 
   const renderItem = ({ item }: { item: ImageData }) => {
     return (
-      <TouchableOpacity onPress={() => alert(item.id)} style={styles.item}>
+      <TouchableOpacity onPress={() => alert(item.uuid)} style={styles.item}>
         <Image
           source={{ uri: item.imagePath }}
           style={styles.photo}
@@ -72,7 +72,7 @@ export const HomeScreen = ({ navigation }) => {
         <FlatList
           data={imageGrid}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.uuid}
           refreshing={refreshing}
           onRefresh={handleRefresh}
           numColumns={2}
