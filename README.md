@@ -43,3 +43,5 @@ A number of things either uncompleted or problems that may be noticable:
 - Form validation.  There is no clientside form validation, I have not had time to implement any.  There is validation serverside, but that's it for now.
 - You may run into issues when signing into the app where no images will appear on the homepage.  Pull down to refresh and (assuming you have some) your images should load.  I think this may be part of a race condition, but I'm still debugging the issue
 - There are probably a few opportunities for performance enhancements and code refactoring.  I had to write instagram from scratch in a week, sacrifices had to be made.
+- Error handling.  Needs to be much better when serverside validation fails
+- Typescript warnings, more comprehensive typing. Far too many to tackle in the time available
