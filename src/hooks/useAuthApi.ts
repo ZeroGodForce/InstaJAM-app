@@ -1,35 +1,13 @@
 import axios from 'axios';
-import { useMemo, useReducer, useState } from 'react';
+import { useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { API_URL } from '@env';
-import { authReducer } from '@/reducers/authReducer';
+import { useAuth } from '@/providers/AuthProvider';
 
 export const useAuthApi = () => {
   const baseURL = API_URL;
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [authState, dispatch] = useReducer(authReducer, {
-    isLoading: true,
-    isSignout: false,
-    userToken: null,
-  });
-
-  const authContext = useMemo(
-    () => ({
-      signIn: async (data) => {
-        dispatch({ type: 'SIGN_IN', token: data });
-        await SecureStore.setItemAsync('userToken', data);
-      },
-      signOut: async () => {
-        dispatch({ type: 'SIGN_OUT' });
-        await SecureStore.deleteItemAsync('userToken');
-      },
-      signUp: async (data) => {
-        dispatch({ type: 'SIGN_IN', token: data });
-        await SecureStore.setItemAsync('userToken', data);
-      },
-    }),
-    []
-  );
+  const { authState, dispatch } = useAuth();
 
   // REGISTER NEW USER
   const postRegister = async (formikValues?: any): Promise<void> => {
@@ -51,7 +29,7 @@ export const useAuthApi = () => {
 
       // Log the new user in
       const userToken = response.data.data.token;
-      authContext.signUp(userToken);
+      signUp(userToken);
 
     } catch (error) {
       console.error('Error submitting registration:', error);
@@ -79,7 +57,7 @@ export const useAuthApi = () => {
 
       // Save the token and log the user in
       const userToken = response.data.data.token;
-      authContext.signIn(userToken);
+      signIn(userToken);
 
     } catch (error) {
       console.error('Error signing in:', error);
@@ -102,7 +80,7 @@ export const useAuthApi = () => {
         }
       })
 
-      authContext.signOut();
+      signOut();
     } catch (error) {
       console.error('Error signing out:', error);
     } finally {
@@ -110,5 +88,23 @@ export const useAuthApi = () => {
     }
   };
 
-  return { authContext, authState, dispatch, postRegister, postLogin, deleteLogout };
+  const signIn = async (data) => {
+    console.log('SIGN_IN dispatch:', dispatch);
+    dispatch({ type: 'SIGN_IN', token: data });
+    await SecureStore.setItemAsync('userToken', data);
+  };
+
+  const signOut = async () => {
+    console.log('SIGN_OUT dispatch:', dispatch);
+    dispatch({ type: 'SIGN_OUT' });
+    await SecureStore.deleteItemAsync('userToken');
+  };
+
+  const signUp = async (data) => {
+    console.log('SIGN_IN/UP dispatch:', dispatch);
+    dispatch({ type: 'SIGN_IN', token: data });
+    await SecureStore.setItemAsync('userToken', data);
+  };
+
+  return { signIn, signOut, signUp, postRegister, postLogin, deleteLogout };
 };
