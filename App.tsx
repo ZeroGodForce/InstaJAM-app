@@ -10,7 +10,6 @@ import { authReducer } from '@/reducers/authReducer';
 import { PaperProvider } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '@/providers/AuthProvider';
-import { Animated } from 'react-native';
 
 export default function App({ navigation }) {
   const [authState, dispatch] = useReducer(authReducer, {
@@ -19,7 +18,6 @@ export default function App({ navigation }) {
     userToken: null,
   });
   const [showSplash, setShowSplash] = useState(true);
-  const [fadeAnim] = useState(new Animated.Value(1));
 
   useEffect(() => {
     const bootstrapAsync = async () => {
@@ -34,13 +32,12 @@ export default function App({ navigation }) {
       }
 
       dispatch({ type: 'INITIALIZE', token: userToken });
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 2000,
-        useNativeDriver: true,
-      }).start(() => {
+
+      // Give a bit of extra time for promises to resolve and tokens to be loaded
+      setTimeout(() => {
         setShowSplash(false);
-      });
+      }, 2000);
+      
     };
 
     bootstrapAsync();
