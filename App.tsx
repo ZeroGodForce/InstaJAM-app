@@ -1,16 +1,16 @@
-import React, { useEffect, useMemo, useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { TabNavigator } from '@/navigation';
 import * as SecureStore from 'expo-secure-store';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { HeaderButtonsProvider } from 'react-navigation-header-buttons';
 import { RootNavigatorParams } from '@/types';
-import { ImageModal, LoginScreen, RegisterScreen, SplashScreen, splashStyles } from '@/screens';
+import { ImageModal, LoginScreen, RegisterScreen, SplashScreen } from '@/screens';
 import { authReducer } from '@/reducers/authReducer';
 import { PaperProvider } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '@/providers/AuthProvider';
-import { Animated, Text } from 'react-native';
+import { Animated } from 'react-native';
 
 export default function App({ navigation }) {
   const [authState, dispatch] = useReducer(authReducer, {
@@ -53,15 +53,11 @@ export default function App({ navigation }) {
   const Stack = createNativeStackNavigator<RootNavigatorParams>();
   const screenOptions = {
     headerShown: false,
-    // animationTypeForReplace: authState.isSignout ? 'pop' : 'push',
+    animationTypeForReplace: authState.isSignout ? 'pop' : 'push',
   };
 
   if (showSplash) {
-    return (
-      <Animated.View style={{ ...splashStyles, opacity: fadeAnim }}>
-        <SplashScreen />
-      </Animated.View>
-    );
+    return <SplashScreen />;
   } else {
     return (
       <AuthProvider authState={authState} dispatch={dispatch}>
