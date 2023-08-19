@@ -1,9 +1,9 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, Image, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { FlatList, Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useApi } from '@/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ImageData } from '@/types';
-
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export const FavouritesScreen = ({ navigation }) => {
   const { getFavourites } = useApi();
@@ -12,7 +12,7 @@ export const FavouritesScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerShown:true,
+      headerShown: true,
       headerLargeTitle: true,
     });
   }, [navigation]);
@@ -74,16 +74,26 @@ export const FavouritesScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.grid}>
-        <FlatList
-          data={imageGrid}
-          renderItem={renderItem}
-          keyExtractor={item => item.uuid}
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-          numColumns={2}
-        />
-      </View>
+      {!imageGrid || imageGrid.length === 0 ? (
+        <View style={styles.empty}>
+          <MaterialCommunityIcons name="image-area" size={44} color="black" />
+          <Text style={styles.emptyTitle}>No Favourites</Text>
+          <Text style={styles.emptyDescription}>
+            Select some and pull down to refresh them here
+          </Text>
+        </View>
+      ) : (
+        <View style={styles.grid}>
+          <FlatList
+            data={imageGrid}
+            renderItem={renderItem}
+            keyExtractor={item => item.uuid}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            numColumns={2}
+          />
+        </View>
+      )}
     </SafeAreaView>
   )
 }
@@ -106,5 +116,25 @@ const styles = StyleSheet.create({
   photo: {
     flex: 1,
     resizeMode: 'cover',
+  },
+  empty: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyTitle: {
+    fontSize: 21,
+    fontWeight: '600',
+    color: '#000',
+    marginBottom: 8,
+    marginTop: 16,
+  },
+  emptyDescription: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#878787',
+    marginBottom: 24,
   },
 });

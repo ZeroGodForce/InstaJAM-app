@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, Image, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { FlatList, Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { MaterialHeaderButton } from '@/components'
 import { useApi } from '@/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FAB, ToggleButton } from 'react-native-paper';
+import { ToggleButton } from 'react-native-paper';
 import { ImageData } from '@/types';
 import { AuthContext } from '@/context/AuthContext';
-
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export const HomeScreen = ({ navigation }) => {
   const { getImages, putFavourite } = useApi();
@@ -17,7 +17,6 @@ export const HomeScreen = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Home',
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           <Item title="Upload" onPress={() => navigation.navigate('UploadForm')} />
@@ -70,7 +69,15 @@ export const HomeScreen = ({ navigation }) => {
 
   const renderItem = ({ item }: { item: ImageData }) => {
     return (
-      <Pressable onPress={() => alert(item.uuid)} style={styles.item}>
+      <Pressable
+        onPress={() => navigation.navigate('Image', {
+          image: item,
+          options: {
+            headerShown: false
+          }
+        })}
+        style={styles.item}
+      >
         <Image
           source={{ uri: item.imagePath }}
           style={styles.photo}
@@ -91,16 +98,26 @@ export const HomeScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.grid}>
-        <FlatList
-          data={imageGrid}
-          renderItem={renderItem}
-          keyExtractor={item => item.uuid}
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-          numColumns={2}
-        />
-      </View>
+      {!imageGrid || imageGrid.length === 0 ? (
+        <View style={styles.empty}>
+          <MaterialCommunityIcons name="image-area" size={44} color="black" />
+          <Text style={styles.emptyTitle}>No Images</Text>
+          <Text style={styles.emptyDescription}>
+            Press 'Upload' to add images and pull down to refresh them here
+          </Text>
+        </View>
+      ) : (
+        <View style={styles.grid}>
+          <FlatList
+            data={imageGrid}
+            renderItem={renderItem}
+            keyExtractor={item => item.uuid}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            numColumns={2}
+          />
+        </View>
+      )}
     </SafeAreaView>
   )
 }
@@ -113,7 +130,6 @@ const styles = StyleSheet.create({
   grid: {
     flex: 1,
     padding: 4,
-    backgroundColor: '#aeaeae',
     paddingTop: Platform.OS === 'ios' ? 96 : 4,
   },
   item: {
@@ -129,5 +145,25 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 5,
     top: 5,
+  },
+  empty: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyTitle: {
+    fontSize: 21,
+    fontWeight: '600',
+    color: '#000',
+    marginBottom: 8,
+    marginTop: 16,
+  },
+  emptyDescription: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#878787',
+    marginBottom: 24,
   },
 });
