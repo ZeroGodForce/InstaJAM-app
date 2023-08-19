@@ -46,15 +46,17 @@ export const FavouritesScreen = ({ navigation }) => {
     description: item.description,
     imagePath: item.imagePath,
     favourite: item.favourite,
+    height: item.height,
+    width: item.width,
+    filesize: item.filesize,
+    createdAt: item.createdAt,
   }));
 
   const renderItem = ({ item }: { item: ImageData }) => {
     return (
       <Pressable
         onPress={() => navigation.navigate('Image', {
-          title: item.title,
-          description: item.description,
-          imagePath: item.imagePath,
+          image: item,
           options: {
             headerShown: false
           }

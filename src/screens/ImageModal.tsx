@@ -1,25 +1,27 @@
 import React, { useLayoutEffect } from 'react';
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 export const ImageModal = ({ navigation, route }) => {
-    const { title, description, imagePath } = route.params;
+    const { image } = route.params;
+
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: title,
-            description: description,
-            imagePath: imagePath,
+            title: image.title,
             headerLargeTitle: false,
         });
     }, [navigation]);
 
     return (
         <View>
+            <Text>{image.description}</Text>
+            <Text>{image.width} x {image.height}</Text>
+            <Text>Size: {image.filesize}</Text>
+            <Text>{image.createdAt}</Text>
             <Image
-                source={{ uri: imagePath }}
+                source={{ uri: image.imagePath }}
                 style={styles.photo}
                 accessibilityIgnoresInvertColors
             />
-            <Text>{description}</Text>
         </View>
     )
 }

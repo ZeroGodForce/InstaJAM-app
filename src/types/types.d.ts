@@ -5,4 +5,8 @@ export type ImageData = {
     description: string;
     imagePath: string;
     favourite: boolean;
+    height: number;
+    width:number;
+    filesize:number;
+    createdAt: Date;
 };

@@ -60,6 +60,10 @@ export const HomeScreen = ({ navigation }) => {
     description: item.description,
     imagePath: item.imagePath,
     favourite: item.favourite,
+    height: item.height,
+    width: item.width,
+    filesize: item.filesize,
+    createdAt: item.createdAt,
   }));
 
   const renderItem = ({ item }: { item: ImageData }) => {
