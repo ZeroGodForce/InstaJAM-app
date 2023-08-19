@@ -47,7 +47,6 @@ export const RegisterScreen = ({ navigation }) => {
                     <Text style={styles.inputLabel}>Full name</Text>
                     <TextInput
                       autoCorrect={false}
-                      // mode="outlined"
                       onChangeText={handleChange('name')}
                       placeholder="Jonathan Doe-Smith"
                       placeholderTextColor="#6b7280"
@@ -61,12 +60,10 @@ export const RegisterScreen = ({ navigation }) => {
                       autoCapitalize="none"
                       autoCorrect={false}
                       keyboardType="email-address"
-                      // mode="outlined"
                       onChangeText={handleChange('email')}
                       placeholder="hello@instjam.com"
                       placeholderTextColor="#6b7280"
                       style={styles.inputControl}
-                      // textContentType="emailAddress"
                       value={values.email}
                     />
                   </View>
@@ -74,13 +71,11 @@ export const RegisterScreen = ({ navigation }) => {
                     <Text style={styles.inputLabel}>Password</Text>
                     <TextInput
                       autoCorrect={false}
-                      // mode="outlined"
                       onChangeText={handleChange('password')}
                       placeholder="********"
                       placeholderTextColor="#6b7280"
                       style={styles.inputControl}
                       secureTextEntry={true}
-                      // textContentType="password"
                       value={values.password}
                     />
                   </View>
@@ -176,8 +171,5 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     fontWeight: '600',
     color: '#fff',
-  },
-  debugbar: {
-    paddingBottom: 20,
   },
 });

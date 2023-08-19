@@ -1,4 +1,3 @@
-import { DebugBar } from '@/components';
 import { useAuthApi } from '@/hooks';
 import { Formik } from 'formik';
 import React from 'react';
@@ -38,9 +37,6 @@ export const LoginScreen = ({ navigation }) => {
           {({ handleChange, handleSubmit, values }) => {
             return (
               <View style={styles.form}>
-                <View style={styles.debugbar}>
-                  <DebugBar data={values} />
-                </View>
                 <View style={styles.input}>
                   <Text style={styles.inputLabel}>Email address</Text>
                   <TextInput
@@ -158,8 +154,5 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     fontWeight: '600',
     color: '#fff',
-  },
-  debugbar: {
-    paddingBottom: 20,
   },
 });
