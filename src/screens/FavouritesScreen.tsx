@@ -11,10 +11,10 @@ export const FavouritesScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
 
   useLayoutEffect(() => {
-    // navigation.setOptions({
-    //   headerShown:true,
-    //   headerLargeTitle: true
-    // });
+    navigation.setOptions({
+      headerShown:true,
+      headerLargeTitle: true,
+    });
   }, [navigation]);
 
   useEffect(() => {
@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
   grid: {
     flex: 1,
     padding: 4,
-    backgroundColor: '#aeaeae',
     paddingTop: Platform.OS === 'ios' ? 96 : 4,
   },
   item: {

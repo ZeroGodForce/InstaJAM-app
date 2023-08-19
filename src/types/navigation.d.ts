@@ -1,7 +1,4 @@
-export type FavouritesStackParams = {
-  Favourites: undefined
-  Image: { uuid: string }
-}
+import { ImageData } from "./types"
 
 export type HomeStackParams = {
   Home: undefined
@@ -9,13 +6,14 @@ export type HomeStackParams = {
 }
 
 export type RootNavigatorParams = {
-  Login: underfined
+  Login: undefined
   Register: undefined
   TabNavigator: undefined
+  Image: { image: ImageData }
 }
 
 export type TabNavigatorParams = {
   HomeStack: undefined
-  FavouritesStack: undefined
+  Favourites: undefined
   Profile: undefined
 }

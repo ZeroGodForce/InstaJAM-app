@@ -1,15 +1,16 @@
-import React, { useEffect, useMemo, useReducer } from 'react';
+import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import { TabNavigator } from '@/navigation';
 import * as SecureStore from 'expo-secure-store';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { HeaderButtonsProvider } from 'react-navigation-header-buttons';
 import { RootNavigatorParams } from '@/types';
-import { LoginScreen, RegisterScreen } from '@/screens';
+import { ImageModal, LoginScreen, RegisterScreen, SplashScreen, splashStyles } from '@/screens';
 import { authReducer } from '@/reducers/authReducer';
 import { PaperProvider } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '@/providers/AuthProvider';
+import { Animated, Text } from 'react-native';
 
 export default function App({ navigation }) {
   const [authState, dispatch] = useReducer(authReducer, {
@@ -17,6 +18,8 @@ export default function App({ navigation }) {
     isSignout: false,
     userToken: null,
   });
+  const [showSplash, setShowSplash] = useState(true);
+  const [fadeAnim] = useState(new Animated.Value(1));
 
   useEffect(() => {
     const bootstrapAsync = async () => {
@@ -31,6 +34,13 @@ export default function App({ navigation }) {
       }
 
       dispatch({ type: 'INITIALIZE', token: userToken });
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 2000,
+        useNativeDriver: true,
+      }).start(() => {
+        setShowSplash(false);
+      });
     };
 
     bootstrapAsync();
@@ -43,27 +53,39 @@ export default function App({ navigation }) {
   const Stack = createNativeStackNavigator<RootNavigatorParams>();
   const screenOptions = {
     headerShown: false,
-    animationTypeForReplace: authState.isSignout ? 'pop' : 'push',
+    // animationTypeForReplace: authState.isSignout ? 'pop' : 'push',
   };
-  return (
-    <AuthProvider authState={authState} dispatch={dispatch}>
-      <PaperProvider>
-        <StatusBar style="auto" />
-        <NavigationContainer>
-          <HeaderButtonsProvider stackType="native">
-            <Stack.Navigator screenOptions={screenOptions}>
-              {authState.userToken == null ? (
-                <Stack.Group key="unauthorized">
-                  <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'InstaJAM' }} />
-                  <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: true, }} />
-                </Stack.Group>
-              ) : (
-                <Stack.Screen name="TabNavigator" component={TabNavigator} />
-              )}
-            </Stack.Navigator>
-          </HeaderButtonsProvider>
-        </NavigationContainer>
-      </PaperProvider>
-    </AuthProvider>
-  );
+
+  if (showSplash) {
+    return (
+      <Animated.View style={{ ...splashStyles, opacity: fadeAnim }}>
+        <SplashScreen />
+      </Animated.View>
+    );
+  } else {
+    return (
+      <AuthProvider authState={authState} dispatch={dispatch}>
+        <PaperProvider>
+          <StatusBar style="auto" />
+          <NavigationContainer>
+            <HeaderButtonsProvider stackType="native">
+              <Stack.Navigator screenOptions={screenOptions}>
+                {authState.userToken == null ? (
+                  <Stack.Group key="unauthorized">
+                    <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'InstaJAM' }} />
+                    <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: true, }} />
+                  </Stack.Group>
+                ) : (
+                  <Stack.Group key="authorized">
+                    <Stack.Screen name="TabNavigator" component={TabNavigator} />
+                    <Stack.Screen name="Image" component={ImageModal} options={{ presentation: 'modal', headerShown: true, }} />
+                  </Stack.Group>
+                )}
+              </Stack.Navigator>
+            </HeaderButtonsProvider>
+          </NavigationContainer>
+        </PaperProvider>
+      </AuthProvider>
+    );
+  }
 }

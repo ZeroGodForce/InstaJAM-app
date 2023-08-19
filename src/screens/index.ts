@@ -4,4 +4,5 @@ export * from './FavouritesScreen';
 export * from './LoginScreen';
 export * from './ProfileScreen';
 export * from './RegisterScreen';
+export * from './SplashScreen';
 export * from './UploadFormScreen';
