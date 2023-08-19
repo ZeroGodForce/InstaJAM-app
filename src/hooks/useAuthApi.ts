@@ -82,7 +82,7 @@ export const useAuthApi = () => {
       authContext.signIn(userToken);
 
     } catch (error) {
-      console.error('Error submitting registration:', error);
+      console.error('Error signing in:', error);
     } finally {
       setIsProcessing(false);
     }
@@ -90,9 +90,9 @@ export const useAuthApi = () => {
 
   // LOGOUT USER
   const deleteLogout = async (): Promise<void> => {
+    const userToken = await SecureStore.getItemAsync('userToken');
     try {
       setIsProcessing(true);
-      const userToken = await SecureStore.getItemAsync('userToken');
 
       const response = await axios.delete(`${baseURL}/logout`, {
         headers: {
