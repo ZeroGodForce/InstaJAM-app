@@ -99,12 +99,6 @@ export const HomeScreen = ({ navigation }) => {
           numColumns={2}
         />
       </View>
-      <FAB
-        icon="plus"
-        size="small"
-        style={styles.fab}
-        onPress={() => navigation.navigate('UploadForm')}
-      />
     </SafeAreaView>
   )
 }
@@ -128,12 +122,6 @@ const styles = StyleSheet.create({
   photo: {
     flex: 1,
     resizeMode: 'cover',
-  },
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,
   },
   customButton: {
     position: 'absolute',
