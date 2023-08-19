@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useContext, useLayoutEffect, useState } from 'react';
 import { FlatList, Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { MaterialHeaderButton } from '@/components'
@@ -25,9 +25,14 @@ export const HomeScreen = ({ navigation }) => {
     });
   }, [navigation]);
 
-  useEffect(() => {
-    fetchAndSetImages();
-  }, []);
+  useLayoutEffect(() => {
+    const fetchAndSet = async () => {
+      if (authState.userToken) {
+        await fetchAndSetImages();
+      }
+    };
+    fetchAndSet();
+  }, [authState.userToken]);
 
   const fetchAndSetImages = async () => {
     try {
