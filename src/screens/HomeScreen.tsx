@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { FlatList, Image, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { MaterialHeaderButton } from '@/components'
@@ -6,12 +6,14 @@ import { useApi } from '@/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FAB, ToggleButton } from 'react-native-paper';
 import { ImageData } from '@/types';
+import { AuthContext } from '@/context/AuthContext';
 
 
 export const HomeScreen = ({ navigation }) => {
   const { getImages, putFavourite } = useApi();
   const [images, setImages] = useState<ImageData[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const { authState } = useContext(AuthContext);
 
   useLayoutEffect(() => {
     navigation.setOptions({
