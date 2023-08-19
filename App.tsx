@@ -64,8 +64,7 @@ export default function App({ navigation }) {
   console.log('====================================');
   const Stack = createNativeStackNavigator<RootNavigatorParams>();
   const screenOptions = {
-    headerShown: true,
-    headerLargeTitle: true,
+    headerShown: false,
     animationTypeForReplace: authState.isSignout ? 'pop' : 'push',
   };
   return (
@@ -77,7 +76,7 @@ export default function App({ navigation }) {
           <Stack.Navigator screenOptions={screenOptions}>
             {authState.userToken == null ? (
               <Stack.Group key="unauthorized">
-                <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'InstaJam' }} />
+                <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'InstaJAM' }} />
                 <Stack.Screen name="Register" component={RegisterScreen} />
               </Stack.Group>
             ) : (

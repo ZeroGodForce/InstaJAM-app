@@ -1,104 +1,188 @@
-import React from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Formik } from 'formik';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { DebugBar } from '@/components';
 import { useAuthApi } from '@/hooks';
-import { Button, TextInput } from 'react-native-paper';
+import { Formik } from 'formik';
+import React from 'react';
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
+import { Button } from 'react-native-paper';
 
 export const LoginScreen = ({ navigation }) => {
   const { postLogin } = useAuthApi();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Formik
-        initialValues={{ email: 'hello@instajam.com', password: 'change-me' }}
-        onSubmit={async (values, { setSubmitting }) => {
-          setSubmitting(true);
-          try {
-            await postLogin(values);
-          } catch (error) {
-            alert('An error occurred during LOGIN. Please try again.');
-            console.error('Error during LOGIN', error);
-          } finally {
-            setSubmitting(false);
-          }
-        }}
-      >
-        {({ handleChange, handleSubmit, values }) => {
-          return (
-            <View>
-              <DebugBar data={values} />
-              <View style={styles.inputContainer}>
-                <TextInput
-                  mode="outlined"
-                  value={values.email}
-                  onChangeText={handleChange('email')}
-                  textContentType="emailAddress"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  placeholder="Email"
-                />
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>InstaJam</Text>
+          <Text style={styles.subtitle}>Sign in to your account</Text>
+        </View>
+        <Formik
+          initialValues={{ email: 'hello@instajam.com', password: 'change-me' }}
+          onSubmit={async (values, { setSubmitting }) => {
+            setSubmitting(true);
+            try {
+              await postLogin(values);
+            } catch (error) {
+              alert('An error occurred during LOGIN. Please try again.');
+              console.error('Error during LOGIN', error);
+            } finally {
+              setSubmitting(false);
+            }
+          }}
+        >
+          {({ handleChange, handleSubmit, values }) => {
+            return (
+              <View style={styles.form}>
+                <View style={styles.debugbar}>
+                  <DebugBar data={values} />
+                </View>
+                <View style={styles.input}>
+                  <Text style={styles.inputLabel}>Email address</Text>
+                  <TextInput
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    keyboardType="email-address"
+                    // mode="outlined"
+                    onChangeText={handleChange('email')}
+                    placeholder="john@example.com"
+                    placeholderTextColor="#6b7280"
+                    // textContentType="emailAddress"
+                    style={styles.inputControl}
+                    value={values.email}
+                  />
+                </View>
+                <View style={styles.input}>
+                  <Text style={styles.inputLabel}>Password</Text>
+                  <TextInput
+                    autoCorrect={false}
+                    // mode="outlined"
+                    onChangeText={handleChange('password')}
+                    placeholder="********"
+                    placeholderTextColor="#6b7280"
+                    style={styles.inputControl}
+                    secureTextEntry={true}
+                    textContentType="password"
+                    value={values.password}
+                  />
+                </View>
+                <View style={styles.formAction}>
+                  <TouchableOpacity onPress={handleSubmit}>
+                    <View style={styles.btn}>
+                      <Text style={styles.btnText}>Sign in</Text>
+                    </View>
+                  </TouchableOpacity>
+                  {/* <Button style={styles.realbtn} mode="contained" onPress={handleSubmit}>
+                    <Text style={styles.btnText}>Submit</Text>
+                  </Button> */}
+                </View>
+
+                <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                  <Text style={styles.formFooter}>
+                    Don't have an account?{' '}
+                    <Text style={{ textDecorationLine: 'underline' }}>Sign up</Text>
+                  </Text>
+                </TouchableOpacity>
               </View>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  mode="outlined"
-                  value={values.password}
-                  onChangeText={handleChange('password')}
-                  secureTextEntry
-                  textContentType="password"
-                  placeholder="Password"
-                />
-              </View>
-              <View>
-                <Button mode="contained" onPress={handleSubmit}>Submit</Button>
-              </View>
-            </View>
-          );
-        }}
-      </Formik>
-      <View style={{}}>
-        <Pressable onPress={() => navigation.navigate('Register')}>
-          <Text>...or press here to create an account</Text>
-        </Pressable>
+            );
+          }}
+        </Formik>
       </View>
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 24,
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
   },
-  content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  header: {
+    marginVertical: 36,
   },
-  inputContainer: {
-    padding: 10,
-    alignSelf: 'stretch',
-    marginHorizontal: 10,
+  form: {
+    marginBottom: 24,
   },
-  error: {
+  formAction: {
+    marginVertical: 24,
+  },
+  formFooter: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#222',
     textAlign: 'center',
-    marginTop: 10,
-    marginBottom: 10,
-    fontSize: 14,
   },
-
-  buttons: {
-    marginTop: 16,
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#1d1d1d',
+    marginBottom: 6,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#929292',
+    textAlign: 'center',
+  },
+  input: {
+    marginBottom: 16,
+  },
+  inputLabel: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#222',
+    marginBottom: 8,
+  },
+  inputControl: {
+    height: 44,
+    backgroundColor: '#f1f5f9',
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#222',
+  },
+  btn: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    backgroundColor: '#007aff',
+    borderColor: '#007aff',
   },
-  button: {
+  btnText: {
+    fontSize: 17,
+    lineHeight: 24,
+    fontWeight: '600',
+    color: '#fff',
   },
-  buttonDisabled: {
-    opacity: 0.5,
+  // realbtn: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   borderRadius: 8,
+  //   paddingVertical: 8,
+  //   paddingHorizontal: 16,
+  //   borderWidth: 1,
+  //   backgroundColor: '#007aff',
+  //   borderColor: '#007aff',
+  //   fontSize: 17,
+  //   lineHeight: 24,
+  //   fontWeight: '600',
+  //   color: '#fff',
+  // },
+  debugbar: {
+    paddingBottom: 20,
   },
-  registerButton: {
-  }
 });
