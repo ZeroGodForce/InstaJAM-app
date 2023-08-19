@@ -43,10 +43,6 @@ export default function App({ navigation }) {
     bootstrapAsync();
   }, []);
 
-  console.log('========== APP AUTH STATE ==========');
-  console.log('VALUE', authState);
-  console.log('TIME', Date().toString());
-  console.log('====================================');
   const Stack = createNativeStackNavigator<RootNavigatorParams>();
   const screenOptions = {
     headerShown: false,

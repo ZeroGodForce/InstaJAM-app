@@ -28,9 +28,6 @@ export const RegisterScreen = ({ navigation }) => {
               setSubmitting(true);
               try {
                 await postRegister(values);
-                console.log('====================================');
-                console.log('SUBMITTED REGISTRATION VALUES', JSON.stringify(values, null, 2));
-                console.log('====================================');
               } catch (error) {
                 alert('An error occurred during registration. Please try again.');
 

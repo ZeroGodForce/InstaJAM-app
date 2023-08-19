@@ -89,19 +89,16 @@ export const useAuthApi = () => {
   };
 
   const signIn = async (data) => {
-    console.log('SIGN_IN dispatch:', dispatch);
     dispatch({ type: 'SIGN_IN', token: data });
     await SecureStore.setItemAsync('userToken', data);
   };
 
   const signOut = async () => {
-    console.log('SIGN_OUT dispatch:', dispatch);
     dispatch({ type: 'SIGN_OUT' });
     await SecureStore.deleteItemAsync('userToken');
   };
 
   const signUp = async (data) => {
-    console.log('SIGN_IN/UP dispatch:', dispatch);
     dispatch({ type: 'SIGN_IN', token: data });
     await SecureStore.setItemAsync('userToken', data);
   };
