@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
-import { Button } from 'react-native-paper';
 
 export const LoginScreen = ({ navigation }) => {
   const { postLogin } = useAuthApi();
@@ -48,11 +47,9 @@ export const LoginScreen = ({ navigation }) => {
                     autoCapitalize="none"
                     autoCorrect={false}
                     keyboardType="email-address"
-                    // mode="outlined"
                     onChangeText={handleChange('email')}
                     placeholder="john@example.com"
                     placeholderTextColor="#6b7280"
-                    // textContentType="emailAddress"
                     style={styles.inputControl}
                     value={values.email}
                   />
@@ -61,7 +58,6 @@ export const LoginScreen = ({ navigation }) => {
                   <Text style={styles.inputLabel}>Password</Text>
                   <TextInput
                     autoCorrect={false}
-                    // mode="outlined"
                     onChangeText={handleChange('password')}
                     placeholder="********"
                     placeholderTextColor="#6b7280"
@@ -77,11 +73,7 @@ export const LoginScreen = ({ navigation }) => {
                       <Text style={styles.btnText}>Sign in</Text>
                     </View>
                   </TouchableOpacity>
-                  {/* <Button style={styles.realbtn} mode="contained" onPress={handleSubmit}>
-                    <Text style={styles.btnText}>Submit</Text>
-                  </Button> */}
                 </View>
-
                 <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                   <Text style={styles.formFooter}>
                     Don't have an account?{' '}
@@ -167,21 +159,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#fff',
   },
-  // realbtn: {
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  //   borderRadius: 8,
-  //   paddingVertical: 8,
-  //   paddingHorizontal: 16,
-  //   borderWidth: 1,
-  //   backgroundColor: '#007aff',
-  //   borderColor: '#007aff',
-  //   fontSize: 17,
-  //   lineHeight: 24,
-  //   fontWeight: '600',
-  //   color: '#fff',
-  // },
   debugbar: {
     paddingBottom: 20,
   },
