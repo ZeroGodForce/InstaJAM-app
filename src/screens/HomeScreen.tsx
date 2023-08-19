@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { Dimensions, FlatList, Image, Pressable, StyleSheet, View } from 'react-native';
+import { FlatList, Image, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { MaterialHeaderButton } from '@/components'
 import { useApi } from '@/hooks';
@@ -113,18 +113,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flex: 1,
     padding: 4,
     backgroundColor: '#aeaeae',
+    paddingTop: Platform.OS === 'ios' ? 96 : 4,
   },
   item: {
-    height: Dimensions.get('window').width / 2,
-    width: '50%',
+    flex: 0.5,
+    aspectRatio: 1,
     padding: 4,
   },
   photo: {
