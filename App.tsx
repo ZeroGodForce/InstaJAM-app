@@ -77,10 +77,10 @@ export default function App({ navigation }) {
             {authState.userToken == null ? (
               <Stack.Group key="unauthorized">
                 <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'InstaJAM' }} />
-                <Stack.Screen name="Register" component={RegisterScreen} />
+                <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: true, }} />
               </Stack.Group>
             ) : (
-              <Stack.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
+              <Stack.Screen name="TabNavigator" component={TabNavigator} />
             )}
           </Stack.Navigator>
         </HeaderButtonsProvider>

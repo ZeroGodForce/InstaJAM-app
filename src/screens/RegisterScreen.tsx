@@ -1,116 +1,183 @@
-import React from 'react'
-import { StyleSheet, View } from 'react-native';
-import { Formik } from 'formik';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { DebugBar } from '@/components';
 import { useAuthApi } from '@/hooks';
-import { Button, TextInput } from 'react-native-paper';
+import { Formik } from 'formik';
+import React from 'react';
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export const RegisterScreen = ({ navigation }) => {
   const { postRegister } = useAuthApi();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Formik
-        initialValues={{ name: '', email: '', password: '' }}
-        onSubmit={async (values, { setSubmitting }) => {
-          setSubmitting(true);
-          try {
-            await postRegister(values);
-            console.log('====================================');
-            console.log('SUBMITTED REGISTRATION VALUES', JSON.stringify(values, null, 2));
-            console.log('====================================');
-          } catch (error) {
-            alert('An error occurred during registration. Please try again.');
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Getting Started</Text>
+          <Text style={styles.subtitle}>Create an account to continue</Text>
+        </View>
+        <KeyboardAwareScrollView>
+          <Formik
+            initialValues={{ name: '', email: '', password: '' }}
+            onSubmit={async (values, { setSubmitting }) => {
+              setSubmitting(true);
+              try {
+                await postRegister(values);
+                console.log('====================================');
+                console.log('SUBMITTED REGISTRATION VALUES', JSON.stringify(values, null, 2));
+                console.log('====================================');
+              } catch (error) {
+                alert('An error occurred during registration. Please try again.');
 
-            console.error('Error during registration', error);
-          } finally {
-            setSubmitting(false);
-          }
-        }}
-      >
-        {({ handleChange, handleSubmit, values }) => (
-          <View style={styles.content}>
-            <DebugBar data={values} />
-            <View style={styles.inputContainer}>
-              <TextInput
-                value={values.name}
-                onChangeText={handleChange('name')}
-                placeholder="Name"
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <TextInput
-                mode="outlined"
-                value={values.email}
-                onChangeText={handleChange('email')}
-                textContentType="emailAddress"
-                autoCapitalize="none"
-                autoCorrect={false}
-                placeholder="Email"
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.input}
-                value={values.password}
-                onChangeText={handleChange('password')}
-                secureTextEntry
-                textContentType="password"
-                placeholder="Password"
-              />
-            </View>
-            <View>
-              <Button mode="contained" onPress={handleSubmit}>
-                Submit
-              </Button>
-            </View>
-          </View>
-        )}
-      </Formik>
+                console.error('Error during registration', error);
+              } finally {
+                setSubmitting(false);
+              }
+            }}
+          >
+            {({ handleChange, handleSubmit, values }) => {
+              return (
+                <View style={styles.form}>
+                  <View style={styles.input}>
+                    <Text style={styles.inputLabel}>Full name</Text>
+                    <TextInput
+                      autoCorrect={false}
+                      // mode="outlined"
+                      onChangeText={handleChange('name')}
+                      placeholder="Jonathan Doe-Smith"
+                      placeholderTextColor="#6b7280"
+                      style={styles.inputControl}
+                      value={values.name}
+                    />
+                  </View>
+                  <View style={styles.input}>
+                    <Text style={styles.inputLabel}>Email address</Text>
+                    <TextInput
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      keyboardType="email-address"
+                      // mode="outlined"
+                      onChangeText={handleChange('email')}
+                      placeholder="hello@instjam.com"
+                      placeholderTextColor="#6b7280"
+                      style={styles.inputControl}
+                      // textContentType="emailAddress"
+                      value={values.email}
+                    />
+                  </View>
+                  <View style={styles.input}>
+                    <Text style={styles.inputLabel}>Password</Text>
+                    <TextInput
+                      autoCorrect={false}
+                      // mode="outlined"
+                      onChangeText={handleChange('password')}
+                      placeholder="********"
+                      placeholderTextColor="#6b7280"
+                      style={styles.inputControl}
+                      secureTextEntry={true}
+                      // textContentType="password"
+                      value={values.password}
+                    />
+                  </View>
+                  <View style={styles.formAction}>
+                    <TouchableOpacity onPress={handleSubmit}>
+                      <View style={styles.btn}>
+                        <Text style={styles.btnText}>Sign up</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                  <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Text style={styles.formFooter}>
+                      Already have an account?{' '}
+                      <Text style={{ textDecorationLine: 'underline' }}>Sign in</Text>
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            }}
+          </Formik>
+        </KeyboardAwareScrollView>
+      </View>
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingVertical: 24,
+    paddingHorizontal: 0,
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
   },
-  content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  header: {
+    marginVertical: 24,
+    paddingHorizontal: 24,
   },
-  inputContainer: {
-    padding: 10,
-    alignSelf: 'stretch',
-    marginHorizontal: 10,
+  form: {
+    paddingHorizontal: 24,
   },
-  error: {
+  formAction: {
+    marginVertical: 24,
+  },
+  formFooter: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#222',
     textAlign: 'center',
-    marginTop: 10,
-    marginBottom: 10,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#1d1d1d',
+    marginBottom: 6,
+  },
+  subtitle: {
     fontSize: 14,
+    fontWeight: '500',
+    color: '#929292',
   },
   input: {
-    borderWidth: 1,
-    padding: 10,
-    height: 50,
-    marginVertical: 8,
-    borderRadius: 5,
+    marginBottom: 16,
   },
-  buttons: {
-    marginTop: 16,
+  inputLabel: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#222',
+    marginBottom: 8,
+  },
+  inputControl: {
+    height: 44,
+    backgroundColor: '#f1f5f9',
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#222',
+  },
+  btn: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    backgroundColor: '#007aff',
+    borderColor: '#007aff',
   },
-  button: {
+  btnText: {
+    fontSize: 17,
+    lineHeight: 24,
+    fontWeight: '600',
+    color: '#fff',
   },
-  buttonDisabled: {
-    opacity: 0.5,
+  debugbar: {
+    paddingBottom: 20,
   },
-  registerButton: {
-  }
 });
