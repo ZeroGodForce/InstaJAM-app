@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, Image, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Dimensions, Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Formik } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { DebugBar } from '@/components';
 import { useApi } from '@/hooks';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const imagesDirectory = FileSystem.documentDirectory + 'images/';
 
@@ -76,6 +77,7 @@ export const UploadFormScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <KeyboardAwareScrollView>
       <View style={styles.container}>
         <Formik
           initialValues={{ image: '', title: '', description: '' }}
@@ -96,7 +98,7 @@ export const UploadFormScreen = ({ navigation }) => {
         >
           {({ handleChange, handleBlur, handleSubmit, values }) => (
             <View style={styles.form}>
-              <DebugBar data={values} />
+              {/* <DebugBar data={values} /> */}
               <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 {!preview ? (
                   <Image style={{ width: imageWidth, height: imageHeight }} source={require('@/images/placeholder-image.jpg')} />
@@ -105,20 +107,20 @@ export const UploadFormScreen = ({ navigation }) => {
                 )}
               </View>
               <View style={styles.btnGroup}>
-                <Pressable
+                <TouchableOpacity
                   onPress={() => selectImage(handleChange('image'), true)}
                   style={{ flex: 1, paddingHorizontal: 6 }}>
                   <View style={styles.btnImagePicker}>
                     <Text style={styles.btnImagePickerText}>Photo Library</Text>
                   </View>
-                </Pressable>
-                <Pressable
+                </TouchableOpacity>
+                <TouchableOpacity
                   onPress={() => selectImage(handleChange('image'), false)}
                   style={{ flex: 1, paddingHorizontal: 6 }}>
                   <View style={styles.btnOpenCamera}>
                     <Text style={styles.btnOpenCameraText}>Capture Image</Text>
                   </View>
-                </Pressable>
+                </TouchableOpacity>
               </View>
               <View style={styles.input}>
                 <Text style={styles.inputLabel}>Title</Text>
@@ -144,16 +146,17 @@ export const UploadFormScreen = ({ navigation }) => {
                 />
               </View>
               <View style={styles.formAction}>
-                <Pressable onPress={handleSubmit}>
+                <TouchableOpacity onPress={handleSubmit}>
                   <View style={styles.btn}>
                     <Text style={styles.btnText}>Upload</Text>
                   </View>
-                </Pressable>
+                </TouchableOpacity>
               </View>
             </View>
           )}
         </Formik>
       </View>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }

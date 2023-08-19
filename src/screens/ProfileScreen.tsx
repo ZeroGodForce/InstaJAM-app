@@ -1,5 +1,5 @@
 import React from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthApi } from '@/hooks';
 
@@ -13,11 +13,11 @@ export const ProfileScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             <View style={styles.container}>
-                <Pressable onPress={handleLogOut}>
+                <TouchableOpacity onPress={handleLogOut}>
                     <View style={styles.btnXL}>
                         <Text style={styles.btnXLText}>Log out</Text>
                     </View>
-                </Pressable>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     )

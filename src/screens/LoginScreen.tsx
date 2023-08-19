@@ -1,4 +1,5 @@
 import { useAuthApi } from '@/hooks';
+import { API_URL } from '@env';
 import { Formik } from 'formik';
 import React from 'react';
 import {
@@ -80,6 +81,10 @@ export const LoginScreen = ({ navigation }) => {
             );
           }}
         </Formik>
+        <View style={{ marginTop: 'auto' }}>
+          <Text>Your API URL</Text>
+          <Text style={[styles.subtitle, { textDecorationLine: 'underline' }]}>{API_URL}</Text>
+        </View>
       </View>
     </SafeAreaView>
   );
