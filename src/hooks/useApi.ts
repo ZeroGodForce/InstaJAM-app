@@ -30,7 +30,7 @@ export const useApi = () => {
         }
       })
     } catch (error) {
-      console.error('Error uploading:', error);
+      console.log('Error uploading:', error);
     } finally {
       setIsProcessing(false);
     }
@@ -51,8 +51,9 @@ export const useApi = () => {
     } catch (error) {
       if (error.response) {
         if (error.response && error.response.status === 401) {
+          alert('Unable to retrieve images. Please try again');
           console.log('============ RESPONSE ERROR ============');
-          console.error('DATA', JSON.stringify(error.response.data, null, 2));
+          console.log('DATA', JSON.stringify(error.response.data, null, 2));
           console.log('STATUS CODE', error.response.status);
           console.log('========================================');
         }
@@ -79,7 +80,7 @@ export const useApi = () => {
 
       return response.data.data;
     } catch (error) {
-      console.error('Error retrieving images:', error.response ? error.response.data : error.message);
+      console.log('Error retrieving images:', error.response ? error.response.data : error.message);
       throw error;
     }
   };
@@ -105,7 +106,8 @@ export const useApi = () => {
 
       return response.data.data;
     } catch (error) {
-      console.error('Error updating favourite image:', error);
+      alert('Error updating favourite image');
+      console.log('Error updating favourite image:', error);
     } finally {
       setIsProcessing(false);
     }

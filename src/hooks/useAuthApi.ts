@@ -32,7 +32,7 @@ export const useAuthApi = () => {
       signUp(userToken);
 
     } catch (error) {
-      console.error('Error submitting registration:', error);
+      console.log('Error submitting registration:', error);
     } finally {
       setIsProcessing(false);
     }
@@ -60,7 +60,10 @@ export const useAuthApi = () => {
       signIn(userToken);
 
     } catch (error) {
-      console.error('Error signing in:', error);
+      if (error.response && error.response.status === 404) {
+        alert(error.response.data.error);
+      }
+      console.log('Error signing in:', error);
     } finally {
       setIsProcessing(false);
     }
@@ -81,7 +84,7 @@ export const useAuthApi = () => {
         }
       })
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.log('Error signing out:', error);
     } finally {
       setIsProcessing(false);
     }

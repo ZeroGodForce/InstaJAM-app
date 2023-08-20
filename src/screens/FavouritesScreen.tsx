@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { useApi } from '@/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ImageData } from '@/types';
@@ -13,7 +13,6 @@ export const FavouritesScreen = ({ navigation }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      headerLargeTitle: true,
     });
   }, [navigation]);
 
@@ -26,7 +25,7 @@ export const FavouritesScreen = ({ navigation }) => {
       const fetchedImages = await getFavourites();
       setImages(fetchedImages);
     } catch (error) {
-      console.error("Error fetching images:", error);
+      console.log("Error fetching images:", error);
     }
   };
 
@@ -72,28 +71,32 @@ export const FavouritesScreen = ({ navigation }) => {
     );
   };
 
+  const EmptyComponent = () => (
+    <View style={styles.empty}>
+      <MaterialCommunityIcons name="image-area" size={44} color="black" />
+      <Text style={styles.emptyTitle}>No Favourites</Text>
+      <Text style={styles.emptyDescription}>
+        Select some and pull down to refresh them here
+      </Text>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
-      {!imageGrid || imageGrid.length === 0 ? (
-        <View style={styles.empty}>
-          <MaterialCommunityIcons name="image-area" size={44} color="black" />
-          <Text style={styles.emptyTitle}>No Favourites</Text>
-          <Text style={styles.emptyDescription}>
-            Select some and pull down to refresh them here
-          </Text>
-        </View>
-      ) : (
-        <View style={styles.grid}>
-          <FlatList
-            data={imageGrid}
-            renderItem={renderItem}
-            keyExtractor={item => item.uuid}
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            numColumns={2}
-          />
-        </View>
-      )}
+      <View style={styles.grid}>
+        <FlatList
+          data={imageGrid}
+          renderItem={renderItem}
+          keyExtractor={item => item.uuid}
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          numColumns={2}
+          ListEmptyComponent={EmptyComponent}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
+        />
+      </View>
     </SafeAreaView>
   )
 }
@@ -106,7 +109,6 @@ const styles = StyleSheet.create({
   grid: {
     flex: 1,
     padding: 4,
-    paddingTop: Platform.OS === 'ios' ? 96 : 4,
   },
   item: {
     flex: 0.5,
