@@ -30,7 +30,7 @@ cp .env.example .env
 Open your .env file in your text editor/IDE of choice, and change the `API_URL` to the address the backend API is running from e.g`
 
 ```env
-# Do NOT add a trailing slash
+# Do NOT add a trailing slash, and do not forget "/api/v1"
 API_URL=http://instajam-api.test/api/v1
 ```
 
