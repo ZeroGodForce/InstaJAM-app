@@ -69,6 +69,7 @@ export const useAuthApi = () => {
   // LOGOUT USER
   const deleteLogout = async (): Promise<void> => {
     const userToken = await SecureStore.getItemAsync('userToken');
+    signOut();
     try {
       setIsProcessing(true);
 
@@ -79,8 +80,6 @@ export const useAuthApi = () => {
           'Authorization': `Bearer ${userToken}`,
         }
       })
-
-      signOut();
     } catch (error) {
       console.error('Error signing out:', error);
     } finally {
