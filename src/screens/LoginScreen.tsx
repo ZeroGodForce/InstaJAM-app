@@ -22,7 +22,7 @@ export const LoginScreen = ({ navigation }) => {
           <Text style={styles.subtitle}>Sign in to your account</Text>
         </View>
         <Formik
-          initialValues={{ email: 'hello@instajam.com', password: 'change-me' }}
+          initialValues={{ email: '', password: '' }}
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
             try {
@@ -45,7 +45,7 @@ export const LoginScreen = ({ navigation }) => {
                     autoCorrect={false}
                     keyboardType="email-address"
                     onChangeText={handleChange('email')}
-                    placeholder="john@example.com"
+                    placeholder="hello@instajam.com"
                     placeholderTextColor="#6b7280"
                     style={styles.inputControl}
                     value={values.email}
